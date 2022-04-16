@@ -2,6 +2,7 @@ import React from 'react';
 import TicTacToeCell from './TicTacToeCell';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { TicTacToeCellValues } from '../../helpers/consts';
+import { css } from '@emotion/css';
 
 export default {
   component: TicTacToeCell,
@@ -27,4 +28,18 @@ Clickable.args = {
   handleClick: () => {
     console.log('cell clicked');
   },
+};
+
+export const Styled = Template.bind({});
+Styled.args = {
+  value: TicTacToeCellValues.Circle,
+  className: css`
+    border: 1px solid;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+  `,
 };

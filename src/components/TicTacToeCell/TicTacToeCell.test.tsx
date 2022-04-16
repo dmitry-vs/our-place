@@ -37,4 +37,12 @@ describe('TicTacToeCell', () => {
 
     expect(handleClick).toHaveBeenCalled();
   });
+
+  it('renders element with correct class', () => {
+    const className = 'test-class-name';
+    render(
+      <TicTacToeCell value={TicTacToeCellValues.Circle} className={className} />
+    );
+    expect(screen.getByRole(role)).toHaveClass(className);
+  });
 });
