@@ -7,6 +7,7 @@ import { css } from '@emotion/css';
 export default {
   component: TicTacToeCell,
   title: 'TicTacToe/TicTacToeCell',
+  decorators: [(story) => <div style={{ padding: '1rem' }}>{story()}</div>],
 } as ComponentMeta<typeof TicTacToeCell>;
 
 const Template: ComponentStory<typeof TicTacToeCell> = (args) => (
