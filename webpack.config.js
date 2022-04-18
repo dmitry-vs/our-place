@@ -31,7 +31,7 @@ module.exports = (env) => {
 
   const plugins = [
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: './public/index.html',
     }),
     new ForkTsCheckerWebpackPlugin({
       async: false,
@@ -80,12 +80,18 @@ module.exports = (env) => {
               options: {
                 modules: {
                   auto: true,
-                  localIdentName: '[name]-[local]-[hash:base64:8]',
+                  localIdentName: isProduction
+                    ? '[local]-[hash:base64:8]'
+                    : '[name]-[local]-[hash:base64:8]',
                 },
               },
             },
             'sass-loader',
           ],
+        },
+        {
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: 'asset/resource',
         },
       ],
     },
