@@ -1,0 +1,14 @@
+.field {
+  display: grid;
+  gap: 1px;
+  border: 1px solid;
+}
+
+.cell {
+  height: 100px;
+  outline: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
