@@ -1,5 +1,10 @@
 import React from 'react';
+import TicTacToeGame from '../TicTacToeGame';
 
-const App = () => <main>Our Place App</main>;
+const App = () => (
+  <main>
+    <TicTacToeGame />
+  </main>
+);
 
 export default App;

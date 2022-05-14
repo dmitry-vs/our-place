@@ -1,5 +1,8 @@
 import React, { FC, MouseEventHandler } from 'react';
-import { TicTacToeCellValues } from '../../helpers/consts';
+import {
+  TicTacToeCellValues,
+  TIC_TAC_TOE_CELL_CONTENT_MAPPING,
+} from '../../helpers/consts';
 
 type TicTacToeCellProps = {
   value: TicTacToeCellValues;
@@ -12,15 +15,9 @@ const TicTacToeCell: FC<TicTacToeCellProps> = ({
   handleClick,
   className,
 }) => {
-  const cellContentMapping = {
-    [TicTacToeCellValues.Empty]: '',
-    [TicTacToeCellValues.Cross]: 'X',
-    [TicTacToeCellValues.Circle]: 'O',
-  };
-
   return (
     <div role="tic-tac-toe-cell" onClick={handleClick} className={className}>
-      {cellContentMapping[value]}
+      {TIC_TAC_TOE_CELL_CONTENT_MAPPING[value]}
     </div>
   );
 };

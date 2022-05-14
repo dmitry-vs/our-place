@@ -1,11 +1,15 @@
 import React from 'react';
 import TicTacToeField from './TicTacToeField';
 import { render, screen } from '@testing-library/react';
-import { TicTacToeCellValues } from '../../helpers/consts';
+import {
+  TIC_TAC_TOE_CELL_CONTENT_MAPPING,
+  TIC_TAC_TOE_FIELD_SIZE,
+  TicTacToeCellValues,
+  TicTacToeFieldValues,
+} from '../../helpers/consts';
 
 describe('TicTacToeField', () => {
-  const size = 3;
-  const values: Array<TicTacToeCellValues> = [
+  const values: TicTacToeFieldValues = [
     TicTacToeCellValues.Empty,
     TicTacToeCellValues.Cross,
     TicTacToeCellValues.Empty,
@@ -17,33 +21,26 @@ describe('TicTacToeField', () => {
     TicTacToeCellValues.Cross,
   ];
 
+  const handleCellClick = () => undefined;
+
   it('renders correct number of cells', () => {
-    render(<TicTacToeField size={size} values={values} />);
-    expect(screen.getAllByRole('tic-tac-toe-cell').length).toBe(size ** 2);
+    render(
+      <TicTacToeField values={values} handleCellClick={handleCellClick} />
+    );
+    expect(screen.getAllByRole('tic-tac-toe-cell').length).toBe(
+      TIC_TAC_TOE_FIELD_SIZE ** 2
+    );
   });
 
-  it('returns null if size and values are incompatible', () => {
-    render(<TicTacToeField size={3} values={[]} />);
-    expect(screen.queryByRole('tic-tac-toe-field')).toBeNull();
-  });
-
-  it('returns null if size is zero and values are empty', () => {
-    render(<TicTacToeField size={0} values={[]} />);
-    expect(screen.queryByRole('tic-tac-toe-field')).toBeNull();
-  });
-
-  it('returns null if size is negative', () => {
-    render(<TicTacToeField size={-3} values={values} />);
-    expect(screen.queryByRole('tic-tac-toe-field')).toBeNull();
-  });
-
-  it('returns null if size is NaN', () => {
-    render(<TicTacToeField size={NaN} values={values} />);
-    expect(screen.queryByRole('tic-tac-toe-field')).toBeNull();
-  });
-
-  it('returns null if size is Infinity', () => {
-    render(<TicTacToeField size={Infinity} values={values} />);
-    expect(screen.queryByRole('tic-tac-toe-field')).toBeNull();
+  it('renders correct cell values', () => {
+    render(
+      <TicTacToeField values={values} handleCellClick={handleCellClick} />
+    );
+    const cells = screen.getAllByRole('tic-tac-toe-cell');
+    cells.forEach((item, index) => {
+      expect(item.textContent).toBe(
+        TIC_TAC_TOE_CELL_CONTENT_MAPPING[values[index]]
+      );
+    });
   });
 });

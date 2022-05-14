@@ -1,28 +1,35 @@
 import React, { FC } from 'react';
-import { TicTacToeCellValues } from '../../helpers/consts';
+import {
+  TIC_TAC_TOE_FIELD_SIZE,
+  TicTacToeFieldValues,
+} from '../../helpers/consts';
 import TicTacToeCell from '../TicTacToeCell';
 import s from './TicTacToeField.module.scss';
 import clsx from 'clsx';
 import { css } from '@emotion/css';
 
 type TicTacToeFieldProps = {
-  size: number;
-  values: Array<TicTacToeCellValues>;
+  values: TicTacToeFieldValues;
+  handleCellClick: (index: number) => void;
+  className?: string;
 };
 
-const TicTacToeField: FC<TicTacToeFieldProps> = ({ values, size }) => {
-  if (size <= 0 || values.length !== size ** 2) return null;
-
+const TicTacToeField: FC<TicTacToeFieldProps> = ({
+  values,
+  handleCellClick,
+  className,
+}) => {
   return (
     <div
       role="tic-tac-toe-field"
       className={clsx(
         s.field,
         css`
-          max-width: ${size * 100}px;
-          grid-template-rows: repeat(${size}, 1fr);
-          grid-template-columns: repeat(${size}, 1fr);
-        `
+          max-width: ${TIC_TAC_TOE_FIELD_SIZE * 100}px;
+          grid-template-rows: repeat(${TIC_TAC_TOE_FIELD_SIZE}, 1fr);
+          grid-template-columns: repeat(${TIC_TAC_TOE_FIELD_SIZE}, 1fr);
+        `,
+        className
       )}
     >
       {values.map((item, index) => (
@@ -30,7 +37,7 @@ const TicTacToeField: FC<TicTacToeFieldProps> = ({ values, size }) => {
           key={index}
           value={item}
           className={s.cell}
-          handleClick={() => console.log(index)}
+          handleClick={() => handleCellClick(index)}
         />
       ))}
     </div>
