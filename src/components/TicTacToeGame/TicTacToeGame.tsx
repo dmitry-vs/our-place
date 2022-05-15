@@ -6,6 +6,7 @@ import {
   TicTacToeGameResults,
   TicTacToeGameStatuses,
   TicTacToeGameSymbols,
+  User,
 } from '../../helpers/consts';
 import TicTacToeField from '../TicTacToeField';
 import s from './TicTacToeGame.module.scss';
@@ -15,7 +16,9 @@ import {
 } from '../../helpers/utils';
 import { css } from '@emotion/css';
 
-type TicTacToeGameProps = {};
+type TicTacToeGameProps = {
+  user: User;
+};
 
 type TicTacToeGameState = {
   status: TicTacToeGameStatuses;
@@ -41,6 +44,13 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
     this.handleStartStopButtonClick =
       this.handleStartStopButtonClick.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
+  }
+
+  componentDidUpdate(prevProps: Readonly<TicTacToeGameProps>) {
+    const { user } = this.props;
+    if (user !== prevProps.user) {
+      this.setState(initialState);
+    }
   }
 
   handlePlayerSymbolChange(e: FormEvent<HTMLSelectElement>) {
@@ -156,13 +166,22 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
   }
 
   render() {
+    const {
+      user: { name, email },
+    } = this.props;
     const { fieldValues, playerSymbol, status, result } = this.state;
 
     return (
       <div>
-        <h1>Игра Tic-Tac-Toe</h1>
+        <h2
+          className={css`
+            text-decoration: underline;
+          `}
+        >
+          Игра Tic-Tac-Toe
+        </h2>
 
-        <h2>Настройки игры</h2>
+        <h3>Настройки игры</h3>
         <div className={s.gameSettings}>
           <label>Символ игрока: </label>
           <select
@@ -191,10 +210,13 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
           }
         />
 
-        <h2>Состояние игры</h2>
+        <h3>Состояние игры</h3>
         <ul className={s.gameParams}>
           <li className={s.gameParamsListItem}>
             Статус: игра {this.renderStatus()}
+          </li>
+          <li className={s.gameParamsListItem}>
+            Игрок: {name} ({email})
           </li>
           <li className={s.gameParamsListItem}>
             {`Символ игрока: ${
