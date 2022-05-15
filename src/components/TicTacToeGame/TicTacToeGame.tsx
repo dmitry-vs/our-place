@@ -24,7 +24,6 @@ type TicTacToeGameState = {
   status: TicTacToeGameStatuses;
   fieldValues: TicTacToeFieldValues;
   playerSymbol: TicTacToeGameSymbols;
-  currentTurn: TicTacToeGameSymbols | null;
   result: TicTacToeGameResults | null;
 };
 
@@ -32,7 +31,6 @@ const initialState: TicTacToeGameState = {
   status: TicTacToeGameStatuses.Stopped,
   fieldValues: TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   playerSymbol: TicTacToeGameSymbols.Cross,
-  currentTurn: null,
   result: null,
 };
 

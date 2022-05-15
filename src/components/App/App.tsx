@@ -22,7 +22,24 @@ const initialState: AppState = {
 class App extends Component<{}, AppState> {
   state = initialState;
 
-  async componentDidMount() {
+  componentDidMount() {
+    window.addEventListener('unhandledrejection', this.handlePromiseRejection);
+    return this.fetchUsers();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener(
+      'unhandledrejection',
+      this.handlePromiseRejection
+    );
+  }
+
+  handlePromiseRejection = (e: PromiseRejectionEvent) => {
+    // eslint-disable-next-line no-console
+    console.log('Promise rejection error:', e);
+  };
+
+  async fetchUsers() {
     try {
       this.setState({ fetchUsersInProgress: true });
       const { data } = await axios.get<User[]>(
