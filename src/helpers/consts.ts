@@ -24,6 +24,10 @@ export type TicTacToeFieldValues = [
   TicTacToeCellValues
 ];
 
+export const TIC_TAC_TOE_DEFAULT_FIELD_VALUES = Array(
+  TIC_TAC_TOE_FIELD_SIZE ** 2
+).fill(TicTacToeCellValues.Empty) as TicTacToeFieldValues;
+
 export const enum TicTacToeGameStatuses {
   Started,
   Stopped,

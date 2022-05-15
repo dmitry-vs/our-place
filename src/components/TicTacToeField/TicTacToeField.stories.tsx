@@ -25,5 +25,5 @@ Default.args = {
     TicTacToeCellValues.Empty,
     TicTacToeCellValues.Cross,
   ],
-  handleCellClick: (index) => alert(index),
+  handleCellClick: () => null,
 };
