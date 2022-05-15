@@ -15,7 +15,7 @@ import {
 } from '../../helpers/utils';
 import { css } from '@emotion/css';
 
-type TicTacToeGameProps = Record<string, never>;
+type TicTacToeGameProps = {};
 
 type TicTacToeGameState = {
   status: TicTacToeGameStatuses;

@@ -1,9 +1,12 @@
 import React from 'react';
 import TicTacToeGame from '../TicTacToeGame';
+import ErrorBoundary from '../ErrorBoundary';
 
 const App = () => (
   <main>
-    <TicTacToeGame />
+    <ErrorBoundary>
+      <TicTacToeGame />
+    </ErrorBoundary>
   </main>
 );
 
