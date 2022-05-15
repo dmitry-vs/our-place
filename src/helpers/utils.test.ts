@@ -1,4 +1,4 @@
-import { getTicTacToeGameResult } from './utils';
+import { findTicTacToeEmptyCellIndex, getTicTacToeGameResult } from './utils';
 import {
   TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   TicTacToeCellValues,
@@ -266,5 +266,54 @@ describe('getTicTacToeGameResult', () => {
         TicTacToeCellValues.Empty,
       ])
     ).toBeNull();
+  });
+});
+
+describe('findTicTacToeEmptyCellIndex', () => {
+  it('should return null when there are no empty cells', () => {
+    expect(
+      findTicTacToeEmptyCellIndex([
+        TicTacToeCellValues.Cross,
+        TicTacToeCellValues.Circle,
+        TicTacToeCellValues.Cross,
+        TicTacToeCellValues.Circle,
+        TicTacToeCellValues.Cross,
+        TicTacToeCellValues.Cross,
+        TicTacToeCellValues.Circle,
+        TicTacToeCellValues.Cross,
+        TicTacToeCellValues.Circle,
+      ])
+    ).toBeNull();
+  });
+
+  it('should return correct index when there is one empty cell', () => {
+    expect(
+      findTicTacToeEmptyCellIndex([
+        TicTacToeCellValues.Cross,
+        TicTacToeCellValues.Circle,
+        TicTacToeCellValues.Cross,
+        TicTacToeCellValues.Circle,
+        TicTacToeCellValues.Empty,
+        TicTacToeCellValues.Cross,
+        TicTacToeCellValues.Circle,
+        TicTacToeCellValues.Cross,
+        TicTacToeCellValues.Circle,
+      ])
+    ).toBe(4);
+  });
+
+  it('should return correct index when there are several empty cells', () => {
+    const actual = findTicTacToeEmptyCellIndex([
+      TicTacToeCellValues.Empty,
+      TicTacToeCellValues.Circle,
+      TicTacToeCellValues.Cross,
+      TicTacToeCellValues.Circle,
+      TicTacToeCellValues.Empty,
+      TicTacToeCellValues.Cross,
+      TicTacToeCellValues.Circle,
+      TicTacToeCellValues.Empty,
+      TicTacToeCellValues.Circle,
+    ]);
+    expect([0, 4, 7].includes(actual as number)).toBe(true);
   });
 });
