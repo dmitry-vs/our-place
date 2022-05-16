@@ -148,6 +148,7 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
         className={css`
           color: ${color};
         `}
+        role="tic-tac-toe-game-result-info"
       >
         {text}
       </span>
@@ -170,7 +171,7 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
     const { fieldValues, playerSymbol, status, result } = this.state;
 
     return (
-      <div>
+      <div role="tic-tac-toe-game">
         <h2
           className={css`
             text-decoration: underline;
@@ -186,13 +187,25 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
             onChange={this.handlePlayerSymbolChange}
             value={playerSymbol}
             disabled={status !== TicTacToeGameStatuses.Stopped}
+            role="tic-tac-toe-game-symbol-select"
           >
-            <option value={TicTacToeGameSymbols.Cross}>Крестики</option>
-            <option value={TicTacToeGameSymbols.Circle}>Нолики</option>
+            <option
+              value={TicTacToeGameSymbols.Cross}
+              role="tic-tac-toe-game-symbol-select-option"
+            >
+              Крестики
+            </option>
+            <option
+              value={TicTacToeGameSymbols.Circle}
+              role="tic-tac-toe-game-symbol-select-option"
+            >
+              Нолики
+            </option>
           </select>
           <button
             className={s.gameStartStopButton}
             onClick={this.handleStartStopButtonClick}
+            role="tic-tac-toe-game-start-stop-button"
           >{`${
             status === TicTacToeGameStatuses.Stopped ? 'Начать' : 'Завершить'
           } игру`}</button>
@@ -210,13 +223,22 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
 
         <h3>Состояние игры</h3>
         <ul className={s.gameParams}>
-          <li className={s.gameParamsListItem}>
+          <li
+            className={s.gameParamsListItem}
+            role="tic-tac-toe-game-status-info"
+          >
             Статус: игра {this.renderStatus()}
           </li>
-          <li className={s.gameParamsListItem}>
+          <li
+            className={s.gameParamsListItem}
+            role="tic-tac-toe-game-player-info"
+          >
             Игрок: {name} ({email})
           </li>
-          <li className={s.gameParamsListItem}>
+          <li
+            className={s.gameParamsListItem}
+            role="tic-tac-toc-game-symbol-info"
+          >
             {`Символ игрока: ${
               playerSymbol === TicTacToeGameSymbols.Cross
                 ? 'крестики'
