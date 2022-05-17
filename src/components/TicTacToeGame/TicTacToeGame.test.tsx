@@ -36,9 +36,11 @@ describe('TicTacToeGame', () => {
     expect(screen.getByRole(gameRole)).toBeInTheDocument();
     expect(screen.getByRole(symbolSelectRole)).toBeInTheDocument();
     expect(screen.getByRole(symbolSelectRole)).toBeEnabled();
-    const options = screen.getAllByRole(symbolSelectOptionRole);
-    expect((options[0] as HTMLOptionElement).selected).toBe(true);
-    expect((options[1] as HTMLOptionElement).selected).toBe(false);
+    const options = screen.getAllByRole(
+      symbolSelectOptionRole
+    ) as HTMLOptionElement[];
+    expect(options[0].selected).toBe(true);
+    expect(options[1].selected).toBe(false);
     expect(screen.getByRole(startStopButtonRole)).toHaveTextContent(
       'Начать игру'
     );
@@ -54,10 +56,12 @@ describe('TicTacToeGame', () => {
   });
 
   test('correct behaviour on symbol change', async () => {
-    const options = screen.getAllByRole(symbolSelectOptionRole);
+    const options = screen.getAllByRole(
+      symbolSelectOptionRole
+    ) as HTMLOptionElement[];
     await user.selectOptions(screen.getByRole(symbolSelectRole), options[1]);
-    expect((options[0] as HTMLOptionElement).selected).toBe(false);
-    expect((options[1] as HTMLOptionElement).selected).toBe(true);
+    expect(options[0].selected).toBe(false);
+    expect(options[1].selected).toBe(true);
     expect(screen.getByRole(symbolInfoRole)).toHaveTextContent('нолики');
   });
 

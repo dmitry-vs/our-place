@@ -82,10 +82,20 @@ class App extends Component<{}, AppState> {
         >
           Выбор пользователя:
         </label>
-        <select value={currentUserIndex} onChange={this.handleUserSelectChange}>
-          <option value="">Не выбран</option>
+        <select
+          role="app-user-select"
+          value={currentUserIndex}
+          onChange={this.handleUserSelectChange}
+        >
+          <option role="app-user-select-option" value="">
+            Не выбран
+          </option>
           {users.map(({ id, name, email }, index) => (
-            <option key={id} value={index}>{`${name} (${email})`}</option>
+            <option
+              role="app-user-select-option"
+              key={id}
+              value={index}
+            >{`${name} (${email})`}</option>
           ))}
         </select>
       </>
@@ -96,9 +106,10 @@ class App extends Component<{}, AppState> {
     const user = this.getCurrentUser();
 
     return (
-      <main>
-        <h1>Приложение Our Place</h1>
+      <main role="app">
+        <h1 role="app-heading-text">Приложение Our Place</h1>
         <div
+          role="app-user-settings"
           className={css`
             margin-bottom: 25px;
           `}
@@ -110,7 +121,9 @@ class App extends Component<{}, AppState> {
             <TicTacToeGame user={user} />
           </ErrorBoundary>
         ) : (
-          <div>Для работы с приложением необходимо выбрать пользователя</div>
+          <div role="app-choose-user-text">
+            Для работы с приложением необходимо выбрать пользователя
+          </div>
         )}
       </main>
     );
