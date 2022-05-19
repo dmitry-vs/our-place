@@ -12,15 +12,13 @@ type AppState = {
   fetchUsersError: Error | null;
 };
 
-const initialState: AppState = {
-  users: [],
-  currentUserIndex: '',
-  fetchUsersInProgress: false,
-  fetchUsersError: null,
-};
-
 class App extends Component<{}, AppState> {
-  state = initialState;
+  state: AppState = {
+    users: [],
+    currentUserIndex: '',
+    fetchUsersInProgress: false,
+    fetchUsersError: null,
+  };
 
   componentDidMount() {
     window.addEventListener('unhandledrejection', this.handlePromiseRejection);
