@@ -38,8 +38,13 @@ describe('App', () => {
     config: {},
   };
 
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   test('correct initial render with loading message', async () => {
-    mockedAxios.get.mockResolvedValueOnce(testResponse);
+    const promise = Promise.resolve(testResponse);
+    mockedAxios.get.mockImplementationOnce(() => promise);
     render(<App />);
 
     expect(screen.getByRole(headingTextRole)).toBeInTheDocument();
@@ -50,6 +55,10 @@ describe('App', () => {
     expect(screen.getByRole(chooseUserTextRole)).toHaveTextContent(
       'необходимо выбрать пользователя'
     );
+
+    await act(async () => {
+      promise;
+    });
   });
 
   test('show users select when users list loaded successfully', async () => {
