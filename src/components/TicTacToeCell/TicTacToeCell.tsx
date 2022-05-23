@@ -1,5 +1,8 @@
-import React, { FC, MouseEventHandler } from 'react';
-import { TicTacToeCellValues } from '../../helpers/consts';
+import React, { Component, MouseEventHandler } from 'react';
+import {
+  TicTacToeCellValues,
+  TIC_TAC_TOE_CELL_CONTENT_MAPPING,
+} from '../../helpers/consts';
 
 type TicTacToeCellProps = {
   value: TicTacToeCellValues;
@@ -7,22 +10,29 @@ type TicTacToeCellProps = {
   className?: string;
 };
 
-const TicTacToeCell: FC<TicTacToeCellProps> = ({
-  value,
-  handleClick,
-  className,
-}) => {
-  const cellContentMapping = {
-    [TicTacToeCellValues.Empty]: '',
-    [TicTacToeCellValues.Cross]: 'X',
-    [TicTacToeCellValues.Circle]: 'O',
-  };
+class TicTacToeCell extends Component<TicTacToeCellProps> {
+  shouldComponentUpdate(nextProps: Readonly<TicTacToeCellProps>): boolean {
+    const { value, handleClick, className } = this.props;
 
-  return (
-    <div role="tic-tac-toe-cell" onClick={handleClick} className={className}>
-      {cellContentMapping[value]}
-    </div>
-  );
-};
+    if (value !== nextProps.value || handleClick !== nextProps.handleClick) {
+      return true;
+    }
+
+    return (
+      (!className && !!nextProps.className) ||
+      (!!className && !nextProps.className)
+    );
+  }
+
+  render() {
+    const { value, handleClick, className } = this.props;
+
+    return (
+      <div role="tic-tac-toe-cell" onClick={handleClick} className={className}>
+        {TIC_TAC_TOE_CELL_CONTENT_MAPPING[value]}
+      </div>
+    );
+  }
+}
 
 export default TicTacToeCell;

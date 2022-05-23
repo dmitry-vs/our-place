@@ -14,7 +14,6 @@ const Template: ComponentStory<typeof TicTacToeField> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  size: 3,
   values: [
     TicTacToeCellValues.Empty,
     TicTacToeCellValues.Cross,
@@ -26,4 +25,5 @@ Default.args = {
     TicTacToeCellValues.Empty,
     TicTacToeCellValues.Cross,
   ],
+  handleCellClick: () => null,
 };

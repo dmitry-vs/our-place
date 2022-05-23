@@ -1,0 +1,29 @@
+.gameSettings {
+  margin-bottom: 20px;
+}
+
+.gameStartStopButton {
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.gameParams {
+  padding: 0;
+}
+
+.gameParamsListItem {
+  margin-left: 22px;
+  line-height: 28px;
+  display: list-item;
+  font-style: italic;
+}
+
+.fieldActive {
+  background-color: white;
+  opacity: 1;
+}
+
+.fieldInactive {
+  background-color: lightgrey;
+  opacity: 0.3;
+}
