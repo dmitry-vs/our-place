@@ -43,9 +43,3 @@ export const enum TicTacToeGameSymbols {
   Cross,
   Circle,
 }
-
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-};

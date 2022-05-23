@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import {
   TicTacToeCellValues,
   TicTacToeFieldValues,
-  User,
 } from '../../helpers/consts';
 import TicTacToeGame from './TicTacToeGame';
 import userEvent from '@testing-library/user-event';
@@ -22,11 +21,7 @@ describe('TicTacToeGame', () => {
   const cellRole = 'tic-tac-toe-cell';
   const user = userEvent.setup();
 
-  const testUser: User = {
-    id: 1234,
-    name: 'Test User Name',
-    email: 'test-user-email@test.ru',
-  };
+  const testUser = 'Test User Name';
 
   beforeEach(() => {
     render(<TicTacToeGame user={testUser} />);
@@ -48,9 +43,7 @@ describe('TicTacToeGame', () => {
     expect(screen.getByRole(statusInfoRole)).toHaveTextContent(
       'игра не начата'
     );
-    expect(screen.getByRole(playerInfoRole)).toHaveTextContent(
-      `${testUser.name} (${testUser.email})`
-    );
+    expect(screen.getByRole(playerInfoRole)).toHaveTextContent(testUser);
     expect(screen.getByRole(symbolInfoRole)).toHaveTextContent('крестики');
     expect(screen.queryByRole(resultInfoRole)).toBeNull();
   });

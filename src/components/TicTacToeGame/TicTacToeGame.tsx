@@ -6,7 +6,6 @@ import {
   TicTacToeGameResults,
   TicTacToeGameStatuses,
   TicTacToeGameSymbols,
-  User,
 } from '../../helpers/consts';
 import TicTacToeField from '../TicTacToeField';
 import s from './TicTacToeGame.module.scss';
@@ -17,7 +16,8 @@ import {
 import { css } from '@emotion/css';
 
 type TicTacToeGameProps = {
-  user: User;
+  user: string;
+  className?: string;
 };
 
 type TicTacToeGameState = {
@@ -165,13 +165,11 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
   }
 
   render() {
-    const {
-      user: { name, email },
-    } = this.props;
+    const { user, className } = this.props;
     const { fieldValues, playerSymbol, status, result } = this.state;
 
     return (
-      <div role="tic-tac-toe-game">
+      <div role="tic-tac-toe-game" className={className}>
         <h2
           className={css`
             text-decoration: underline;
@@ -233,7 +231,7 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
             className={s.gameParamsListItem}
             role="tic-tac-toe-game-player-info"
           >
-            Игрок: {name} ({email})
+            Игрок: {user}
           </li>
           <li
             className={s.gameParamsListItem}
