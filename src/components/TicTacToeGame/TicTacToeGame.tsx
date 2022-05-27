@@ -1,5 +1,8 @@
 import React, { Component, FormEvent } from 'react';
 import {
+  TIC_TAC_TOE_CELL_DEFAULT_SIZE,
+  TIC_TAC_TOE_CELL_MAX_SIZE,
+  TIC_TAC_TOE_CELL_MIN_SIZE,
   TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   TicTacToeCellValues,
   TicTacToeFieldValues,
@@ -12,6 +15,7 @@ import s from './TicTacToeGame.module.scss';
 import {
   findTicTacToeEmptyCellIndex,
   getTicTacToeGameResult,
+  validateTicTacToeCellSizeStr,
 } from '../../helpers/utils';
 import { css } from '@emotion/css';
 import clsx from 'clsx';
@@ -25,6 +29,8 @@ type TicTacToeGameState = {
   status: TicTacToeGameStatuses;
   fieldValues: TicTacToeFieldValues;
   playerSymbol: TicTacToeGameSymbols;
+  cellSize: string;
+  cellSizeError: string;
   result: TicTacToeGameResults | null;
 };
 
@@ -32,6 +38,8 @@ const initialState: TicTacToeGameState = {
   status: TicTacToeGameStatuses.Stopped,
   fieldValues: TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   playerSymbol: TicTacToeGameSymbols.Cross,
+  cellSize: TIC_TAC_TOE_CELL_DEFAULT_SIZE.toString(),
+  cellSizeError: 'error',
   result: null,
 };
 
@@ -40,6 +48,7 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
     super(props);
     this.state = initialState;
     this.handlePlayerSymbolChange = this.handlePlayerSymbolChange.bind(this);
+    this.handleCellSizeChange = this.handleCellSizeChange.bind(this);
     this.handleStartStopButtonClick =
       this.handleStartStopButtonClick.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
@@ -57,6 +66,12 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
       playerSymbol: Number(e.currentTarget.value),
       fieldValues: TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
       result: null,
+    });
+  }
+
+  handleCellSizeChange(e: FormEvent<HTMLInputElement>) {
+    this.setState({
+      cellSize: e.currentTarget.value,
     });
   }
 
@@ -145,12 +160,7 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
     }
 
     return (
-      <span
-        className={css`
-          color: ${color};
-        `}
-        role="tic-tac-toe-game-result-info"
-      >
+      <span className={css({ color })} role="tic-tac-toe-game-result-info">
         {text}
       </span>
     );
@@ -167,47 +177,72 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
 
   render() {
     const { user, className } = this.props;
-    const { fieldValues, playerSymbol, status } = this.state;
+    const { fieldValues, playerSymbol, status, cellSize } = this.state;
+    const cellSizeError = validateTicTacToeCellSizeStr(cellSize);
 
     return (
       <div role="tic-tac-toe-game" className={clsx(s.game, className)}>
         <h1 className="h1 text-center">Игра Tic-Tac-Toe</h1>
 
         <h4 className="h4 mt-4">Настройки игры</h4>
-        <div className="form-floating">
-          <select
-            className="form-select"
-            onChange={this.handlePlayerSymbolChange}
-            value={playerSymbol}
-            disabled={status !== TicTacToeGameStatuses.Stopped}
-            role="tic-tac-toe-game-symbol-select"
-          >
-            <option
-              value={TicTacToeGameSymbols.Cross}
-              role="tic-tac-toe-game-symbol-select-option"
-            >
-              Крестики
-            </option>
-            <option
-              value={TicTacToeGameSymbols.Circle}
-              role="tic-tac-toe-game-symbol-select-option"
-            >
-              Нолики
-            </option>
-          </select>
-          <label>Символ игрока</label>
+        <div className="row g-2">
+          <div className="col">
+            <div className="form-floating">
+              <select
+                className="form-select"
+                onChange={this.handlePlayerSymbolChange}
+                value={playerSymbol}
+                disabled={status !== TicTacToeGameStatuses.Stopped}
+                role="tic-tac-toe-game-symbol-select"
+              >
+                <option
+                  value={TicTacToeGameSymbols.Cross}
+                  role="tic-tac-toe-game-symbol-select-option"
+                >
+                  Крестики
+                </option>
+                <option
+                  value={TicTacToeGameSymbols.Circle}
+                  role="tic-tac-toe-game-symbol-select-option"
+                >
+                  Нолики
+                </option>
+              </select>
+              <label>Символ игрока</label>
+            </div>
+          </div>
+          <div className="col">
+            <div className="form-floating">
+              <input
+                type="text"
+                className={clsx('form-control', {
+                  'is-invalid': !!cellSizeError,
+                })}
+                value={cellSize}
+                onChange={this.handleCellSizeChange}
+              />
+              <label>{`Размер ячейки, px (от ${TIC_TAC_TOE_CELL_MIN_SIZE} до ${TIC_TAC_TOE_CELL_MAX_SIZE})`}</label>
+            </div>
+          </div>
         </div>
 
-        <TicTacToeField
-          values={fieldValues}
-          handleCellClick={this.handleCellClick}
-          className={clsx(
-            'mt-4 mx-auto',
-            status === TicTacToeGameStatuses.Started
-              ? s.fieldActive
-              : s.fieldInactive
-          )}
-        />
+        {cellSizeError === null ? (
+          <TicTacToeField
+            values={fieldValues}
+            handleCellClick={this.handleCellClick}
+            cellSize={Number(cellSize)}
+            className={clsx(
+              css`
+                margin: 35px auto 0;
+              `,
+              status === TicTacToeGameStatuses.Started
+                ? s.fieldActive
+                : s.fieldInactive
+            )}
+          />
+        ) : (
+          <div className="alert alert-danger my-5">{cellSizeError}</div>
+        )}
 
         <h4 className="h-4 mt-4">Состояние игры</h4>
         <table className="table table-sm table-bordered">

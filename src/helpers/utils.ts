@@ -1,10 +1,13 @@
 import { sample } from 'lodash';
 
 import {
+  TIC_TAC_TOE_CELL_MAX_SIZE,
+  TIC_TAC_TOE_CELL_MIN_SIZE,
   TIC_TAC_TOE_FIELD_SIZE,
   TicTacToeCellValues,
   TicTacToeFieldValues,
   TicTacToeGameResults,
+  ValidationErrors,
 } from './consts';
 
 export const getTicTacToeGameResult = (
@@ -57,4 +60,20 @@ export const findTicTacToeEmptyCellIndex = (
   });
   const result = sample(emptyCellsIndexes);
   return result !== undefined ? result : null;
+};
+
+export const validateTicTacToeCellSizeStr = (value: string) => {
+  const valueTrimmed = value.trim();
+  if (!valueTrimmed) return ValidationErrors.Required;
+  if (!/^-?\d+$/.test(valueTrimmed)) return ValidationErrors.NumberExpected;
+
+  const valueNum = Number(valueTrimmed);
+  if (
+    valueNum < TIC_TAC_TOE_CELL_MIN_SIZE ||
+    valueNum > TIC_TAC_TOE_CELL_MAX_SIZE
+  ) {
+    return ValidationErrors.OutOfRange;
+  }
+
+  return null;
 };

@@ -1,8 +1,13 @@
-import { findTicTacToeEmptyCellIndex, getTicTacToeGameResult } from './utils';
+import {
+  findTicTacToeEmptyCellIndex,
+  getTicTacToeGameResult,
+  validateTicTacToeCellSizeStr,
+} from './utils';
 import {
   TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   TicTacToeCellValues,
   TicTacToeGameResults,
+  ValidationErrors,
 } from './consts';
 
 describe('getTicTacToeGameResult', () => {
@@ -315,5 +320,40 @@ describe('findTicTacToeEmptyCellIndex', () => {
       TicTacToeCellValues.Circle,
     ]);
     expect([0, 4, 7].includes(actual as number)).toBe(true);
+  });
+});
+
+describe('validateTicTacToeCellSizeStr', () => {
+  test('correct error when value is empty or whitespace', () => {
+    expect(validateTicTacToeCellSizeStr('')).toBe(ValidationErrors.Required);
+    expect(validateTicTacToeCellSizeStr(' ')).toBe(ValidationErrors.Required);
+  });
+
+  test('correct error when value is not numeric', () => {
+    expect(validateTicTacToeCellSizeStr('test')).toBe(
+      ValidationErrors.NumberExpected
+    );
+    expect(validateTicTacToeCellSizeStr('1234+')).toBe(
+      ValidationErrors.NumberExpected
+    );
+    expect(validateTicTacToeCellSizeStr('1 2')).toBe(
+      ValidationErrors.NumberExpected
+    );
+    expect(validateTicTacToeCellSizeStr('-')).toBe(
+      ValidationErrors.NumberExpected
+    );
+  });
+
+  test('correct error when value is number out of range', () => {
+    expect(validateTicTacToeCellSizeStr('49')).toBe(
+      ValidationErrors.OutOfRange
+    );
+    expect(validateTicTacToeCellSizeStr('151')).toBe(
+      ValidationErrors.OutOfRange
+    );
+    expect(validateTicTacToeCellSizeStr('0')).toBe(ValidationErrors.OutOfRange);
+    expect(validateTicTacToeCellSizeStr('-10')).toBe(
+      ValidationErrors.OutOfRange
+    );
   });
 });
