@@ -27,7 +27,7 @@ const MainPage: FC<MainPageProps> = ({ userName, handleLogout }) => {
           </div>
         </div>
       </header>
-      <main className="container flex-grow-1 py-5 d-flex justify-content-center">
+      <main className="container flex-grow-1 py-4 d-flex justify-content-center">
         <TicTacToeGame user={userName} />
       </main>
     </div>

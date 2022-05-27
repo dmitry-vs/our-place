@@ -41,10 +41,10 @@ describe('TicTacToeGame', () => {
     );
     expect(screen.getByRole(fieldRole)).toHaveClass('fieldInactive');
     expect(screen.getByRole(statusInfoRole)).toHaveTextContent(
-      'игра не начата'
+      'Игра не начата'
     );
     expect(screen.getByRole(playerInfoRole)).toHaveTextContent(testUser);
-    expect(screen.getByRole(symbolInfoRole)).toHaveTextContent('крестики');
+    expect(screen.getByRole(symbolInfoRole)).toHaveTextContent('Крестики');
     expect(screen.queryByRole(resultInfoRole)).toBeNull();
   });
 
@@ -55,7 +55,7 @@ describe('TicTacToeGame', () => {
     await user.selectOptions(screen.getByRole(symbolSelectRole), options[1]);
     expect(options[0].selected).toBe(false);
     expect(options[1].selected).toBe(true);
-    expect(screen.getByRole(symbolInfoRole)).toHaveTextContent('нолики');
+    expect(screen.getByRole(symbolInfoRole)).toHaveTextContent('Нолики');
   });
 
   test('correct behaviour on start button click', async () => {
@@ -65,7 +65,7 @@ describe('TicTacToeGame', () => {
       'Завершить игру'
     );
     expect(screen.getByRole(fieldRole)).toHaveClass('fieldActive');
-    expect(screen.getByRole(statusInfoRole)).toHaveTextContent('игра начата');
+    expect(screen.getByRole(statusInfoRole)).toHaveTextContent('Игра начата');
     expect(screen.queryByRole(resultInfoRole)).toBeNull();
   });
 
@@ -77,7 +77,7 @@ describe('TicTacToeGame', () => {
     expect(startStopButton).toHaveTextContent('Начать игру');
     expect(screen.getByRole(fieldRole)).toHaveClass('fieldInactive');
     expect(screen.getByRole(statusInfoRole)).toHaveTextContent(
-      'игра не начата'
+      'Игра не начата'
     );
     expect(screen.queryByRole(resultInfoRole)).toBeNull();
   });
@@ -121,11 +121,11 @@ describe('TicTacToeGame', () => {
       'Начать игру'
     );
     expect(screen.getByRole(fieldRole)).toHaveClass('fieldInactive');
-    expect(screen.getByRole(statusInfoRole)).toHaveTextContent('игра окончена');
+    expect(screen.getByRole(statusInfoRole)).toHaveTextContent('Игра окончена');
     const resultInfo = screen.getByRole(resultInfoRole);
     expect(resultInfo).toBeInTheDocument();
     expect(
-      ['пользователь победил', 'пользователь проиграл', 'ничья'].includes(
+      ['Пользователь победил', 'Пользователь проиграл', 'Ничья'].includes(
         resultInfo.textContent as string
       )
     ).toBe(true);

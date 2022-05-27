@@ -8,7 +8,7 @@ type AppState = {
 
 class App extends Component<{}, AppState> {
   state: AppState = {
-    userName: 'Test',
+    userName: null,
   };
 
   componentDidMount() {

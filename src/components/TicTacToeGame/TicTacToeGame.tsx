@@ -14,6 +14,7 @@ import {
   getTicTacToeGameResult,
 } from '../../helpers/utils';
 import { css } from '@emotion/css';
+import clsx from 'clsx';
 
 type TicTacToeGameProps = {
   user: string;
@@ -127,7 +128,7 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
     let color: string, text: string;
     if (result === TicTacToeGameResults.Draw) {
       color = 'grey';
-      text = 'ничья';
+      text = 'Ничья';
     } else {
       if (
         (result === TicTacToeGameResults.CrossWon &&
@@ -136,10 +137,10 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
           playerSymbol === TicTacToeGameSymbols.Circle)
       ) {
         color = 'green';
-        text = 'пользователь победил';
+        text = 'Пользователь победил';
       } else {
         color = 'red';
-        text = 'пользователь проиграл';
+        text = 'Пользователь проиграл';
       }
     }
 
@@ -166,22 +167,16 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
 
   render() {
     const { user, className } = this.props;
-    const { fieldValues, playerSymbol, status, result } = this.state;
+    const { fieldValues, playerSymbol, status } = this.state;
 
     return (
-      <div role="tic-tac-toe-game" className={className}>
-        <h2
-          className={css`
-            text-decoration: underline;
-          `}
-        >
-          Игра Tic-Tac-Toe
-        </h2>
+      <div role="tic-tac-toe-game" className={clsx(s.game, className)}>
+        <h1 className="h1 text-center">Игра Tic-Tac-Toe</h1>
 
-        <h3>Настройки игры</h3>
-        <div className={s.gameSettings}>
-          <label>Символ игрока: </label>
+        <h4 className="h4 mt-4">Настройки игры</h4>
+        <div className="form-floating">
           <select
+            className="form-select"
             onChange={this.handlePlayerSymbolChange}
             value={playerSymbol}
             disabled={status !== TicTacToeGameStatuses.Stopped}
@@ -200,55 +195,65 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
               Нолики
             </option>
           </select>
-          <button
-            className={s.gameStartStopButton}
-            onClick={this.handleStartStopButtonClick}
-            role="tic-tac-toe-game-start-stop-button"
-          >{`${
-            status === TicTacToeGameStatuses.Stopped ? 'Начать' : 'Завершить'
-          } игру`}</button>
+          <label>Символ игрока</label>
         </div>
 
         <TicTacToeField
           values={fieldValues}
           handleCellClick={this.handleCellClick}
-          className={
+          className={clsx(
+            'mt-4 mx-auto',
             status === TicTacToeGameStatuses.Started
               ? s.fieldActive
               : s.fieldInactive
-          }
+          )}
         />
 
-        <h3>Состояние игры</h3>
-        <ul className={s.gameParams}>
-          <li
-            className={s.gameParamsListItem}
-            role="tic-tac-toe-game-status-info"
-          >
-            Статус: игра {this.renderStatus()}
-          </li>
-          <li
-            className={s.gameParamsListItem}
-            role="tic-tac-toe-game-player-info"
-          >
-            Игрок: {user}
-          </li>
-          <li
-            className={s.gameParamsListItem}
-            role="tic-tac-toc-game-symbol-info"
-          >
-            {`Символ игрока: ${
-              playerSymbol === TicTacToeGameSymbols.Cross
-                ? 'крестики'
-                : 'нолики'
-            }`}
-          </li>
-          {result !== null && (
-            <li className={s.gameParamsListItem}>
-              Результат: {this.renderResult()}
-            </li>
+        <h4 className="h-4 mt-4">Состояние игры</h4>
+        <table className="table table-sm table-bordered">
+          <tbody>
+            <tr>
+              <th scope="row" className="w-50">
+                Статус
+              </th>
+              <td role="tic-tac-toe-game-status-info">
+                Игра {this.renderStatus()}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Игрок</th>
+              <td role="tic-tac-toe-game-player-info">{user}</td>
+            </tr>
+            <tr>
+              <th scope="row">Символ игрока</th>
+              <td role="tic-tac-toc-game-symbol-info">
+                {playerSymbol === TicTacToeGameSymbols.Cross
+                  ? 'Крестики'
+                  : 'Нолики'}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Результат</th>
+              <td>{this.renderResult()}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <button
+          className={clsx(
+            'btn d-block w-100',
+            status === TicTacToeGameStatuses.Stopped
+              ? 'btn-outline-success'
+              : 'btn-outline-danger',
+            css`
+              margin-top: 35px;
+            `
           )}
-        </ul>
+          onClick={this.handleStartStopButtonClick}
+          role="tic-tac-toe-game-start-stop-button"
+        >{`${
+          status === TicTacToeGameStatuses.Stopped ? 'Начать' : 'Завершить'
+        } игру`}</button>
       </div>
     );
   }
