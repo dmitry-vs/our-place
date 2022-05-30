@@ -86,8 +86,10 @@ describe('TicTacToeGame', () => {
     await user.click(screen.getByRole(startStopButtonRole));
     const cells = screen.getAllByRole(cellRole);
     await user.click(cells[0]);
-    expect(cells[0]).toHaveTextContent('X');
-    expect(cells.find((item) => item.textContent === 'O')).not.toBeUndefined();
+    expect(cells[0].querySelector('img[alt="Крестик"]')).toBeTruthy();
+    expect(
+      cells.find((item) => !!item.querySelector('img[alt="Нолик"]'))
+    ).toBeTruthy();
   });
 
   test('correct behaviour on non-empty cell click', async () => {
@@ -95,8 +97,10 @@ describe('TicTacToeGame', () => {
     const cells = screen.getAllByRole(cellRole);
     await user.click(cells[4]);
     await user.click(cells[4]);
-    expect(cells[4]).toHaveTextContent('X');
-    expect(cells.find((item) => item.textContent === 'O')).not.toBeUndefined();
+    expect(cells[4].querySelector(`img[alt="Крестик"]`)).toBeTruthy();
+    expect(
+      cells.find((item) => !!item.querySelector('img[alt="Нолик"]'))
+    ).toBeTruthy();
   });
 
   test('correct behaviour if user plays game to end', async () => {
@@ -104,10 +108,13 @@ describe('TicTacToeGame', () => {
 
     const makeUserTurn = async () => {
       const cells = screen.getAllByRole(cellRole);
-      const currentFieldValues = cells.map(({ textContent }) => {
-        if (textContent === 'X') return TicTacToeCellValues.Cross;
-        else if (textContent === 'O') return TicTacToeCellValues.Circle;
-        else return TicTacToeCellValues.Empty;
+      const currentFieldValues = cells.map((item) => {
+        const img = item.querySelector('img');
+        if (!img) return TicTacToeCellValues.Empty;
+        const alt = img.getAttribute('alt');
+        return alt === 'Крестик'
+          ? TicTacToeCellValues.Cross
+          : TicTacToeCellValues.Circle;
       }) as TicTacToeFieldValues;
       const emptyCellIndex = findTicTacToeEmptyCellIndex(currentFieldValues);
       if (emptyCellIndex !== null) await user.click(cells[emptyCellIndex]);

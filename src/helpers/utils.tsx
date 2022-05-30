@@ -1,5 +1,5 @@
+import React from 'react';
 import { sample } from 'lodash';
-
 import {
   TIC_TAC_TOE_CELL_MAX_SIZE,
   TIC_TAC_TOE_CELL_MIN_SIZE,
@@ -9,6 +9,8 @@ import {
   TicTacToeGameResults,
   ValidationErrors,
 } from './consts';
+import Cross from '../assets/icons/cross.svg';
+import Circle from '../assets/icons/circle.svg';
 
 export const getTicTacToeGameResult = (
   fieldValues: TicTacToeFieldValues
@@ -76,4 +78,28 @@ export const validateTicTacToeCellSizeStr = (value: string) => {
   }
 
   return null;
+};
+
+export const getTicTacToeCellContent = (cellValue: TicTacToeCellValues) => {
+  if (cellValue === TicTacToeCellValues.Empty) return null;
+
+  const imgParamsMapping = {
+    cross: { src: Cross, alt: 'Крестик', height: 45, width: 45 },
+    circle: { src: Circle, alt: 'Нолик', height: 30, width: 30 },
+  };
+
+  const { src, alt, height, width } =
+    imgParamsMapping[
+      cellValue === TicTacToeCellValues.Cross ? 'cross' : 'circle'
+    ];
+
+  return (
+    <img
+      role="tic-tac-toe-cell-img"
+      src={src}
+      alt={alt}
+      height={`${height}px`}
+      width={`${width}px`}
+    />
+  );
 };
