@@ -14,9 +14,7 @@ const LoginPage: FC<LoginPageProps> = ({ handleSubmit }) => {
 
   const handleFormSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    const nameTrimmed = name.trim();
-    if (!nameTrimmed) return;
-    handleSubmit(nameTrimmed);
+    handleSubmit(name.trim());
   };
 
   return (
@@ -32,15 +30,11 @@ const LoginPage: FC<LoginPageProps> = ({ handleSubmit }) => {
         `}
         onSubmit={handleFormSubmit}
       >
-        <h1
-          role="app-name-text"
-          className="display-5 m-0 fw-bold font-monospace"
-        >
-          Our Place
-        </h1>
+        <h1 className="display-5 m-0 fw-bold font-monospace">Our Place</h1>
         <h3 className="h4 fw-normal mt-5">Введите имя пользователя</h3>
         <div className="form-floating mt-3">
           <input
+            role="login-page-user-name-input"
             type="text"
             className="form-control"
             placeholder="Имя пользователя"
@@ -50,6 +44,7 @@ const LoginPage: FC<LoginPageProps> = ({ handleSubmit }) => {
           <label>Имя пользователя</label>
         </div>
         <button
+          role="login-page-submit-button"
           className="btn btn-primary btn-lg mt-4 w-100"
           disabled={!name.trim()}
           type="submit"

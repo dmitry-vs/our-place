@@ -214,6 +214,7 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
           <div className="col">
             <div className="form-floating">
               <input
+                role="tic-tac-toe-game-cell-size-input"
                 type="text"
                 className={clsx('form-control', {
                   'is-invalid': !!cellSizeError,
@@ -241,7 +242,12 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
             )}
           />
         ) : (
-          <div className="alert alert-danger my-5">{cellSizeError}</div>
+          <div
+            role="tic-tac-toe-game-invalid-input-alert"
+            className="alert alert-danger my-5"
+          >
+            {cellSizeError}
+          </div>
         )}
 
         <h4 className="h-4 mt-4">Состояние игры</h4>

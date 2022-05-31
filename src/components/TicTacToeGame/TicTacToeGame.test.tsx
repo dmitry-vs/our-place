@@ -1,8 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import {
+  TIC_TAC_TOE_CELL_DEFAULT_SIZE,
   TicTacToeCellValues,
   TicTacToeFieldValues,
+  ValidationErrors,
 } from '../../helpers/consts';
 import TicTacToeGame from './TicTacToeGame';
 import userEvent from '@testing-library/user-event';
@@ -19,6 +21,8 @@ describe('TicTacToeGame', () => {
   const symbolInfoRole = 'tic-tac-toc-game-symbol-info';
   const resultInfoRole = 'tic-tac-toe-game-result-info';
   const cellRole = 'tic-tac-toe-cell';
+  const cellSizeInputRole = 'tic-tac-toe-game-cell-size-input';
+  const invalidInputAlertRole = 'tic-tac-toe-game-invalid-input-alert';
   const user = userEvent.setup();
 
   const testUser = 'Test User Name';
@@ -136,5 +140,44 @@ describe('TicTacToeGame', () => {
         resultInfo.textContent as string
       )
     ).toBe(true);
+  });
+
+  test('cell size input has correct default value', () => {
+    const cellSizeInput = screen.getByRole(cellSizeInputRole);
+    expect(cellSizeInput).toHaveValue(TIC_TAC_TOE_CELL_DEFAULT_SIZE.toString());
+  });
+
+  test('show game field when cell size value is valid', async () => {
+    const cellSizeInput = screen.getByRole(cellSizeInputRole);
+    await user.clear(cellSizeInput);
+    await user.type(cellSizeInput, '100');
+    expect(screen.getByRole(fieldRole)).toBeInTheDocument();
+    expect(screen.queryByRole(invalidInputAlertRole)).toBeNull();
+  });
+
+  test('show alert with error message when cell size value is invalid', async () => {
+    const cellSizeInput = screen.getByRole(cellSizeInputRole);
+
+    // try empty value
+    await user.clear(cellSizeInput);
+    expect(screen.queryByRole(fieldRole)).toBeNull();
+    expect(screen.getByRole(invalidInputAlertRole)).toHaveTextContent(
+      ValidationErrors.Required
+    );
+
+    // try value out of range
+    await user.type(cellSizeInput, '200');
+    expect(screen.queryByRole(fieldRole)).toBeNull();
+    expect(screen.getByRole(invalidInputAlertRole)).toHaveTextContent(
+      ValidationErrors.OutOfRange
+    );
+
+    // try non-numeric value
+    await user.clear(cellSizeInput);
+    await user.type(cellSizeInput, 'test');
+    expect(screen.queryByRole(fieldRole)).toBeNull();
+    expect(screen.getByRole(invalidInputAlertRole)).toHaveTextContent(
+      ValidationErrors.NumberExpected
+    );
   });
 });

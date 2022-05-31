@@ -8,17 +8,21 @@ type MainPageProps = {
 
 const MainPage: FC<MainPageProps> = ({ userName, handleLogout }) => {
   return (
-    <div className="h-100 d-flex flex-column">
+    <div role="main-page" className="h-100 d-flex flex-column">
       <header className="navbar navbar-dark bg-dark">
         <div className="navbar-brand">
           <span className="font-monospace fw-bold ms-3">Our Place</span>
         </div>
-        <div className="navbar-nav ms-auto text-white opacity-75">
+        <div
+          role="main-page-user-name"
+          className="navbar-nav ms-auto text-white opacity-75"
+        >
           {userName}
         </div>
         <div className="navbar-nav ms-auto">
           <div className="nav-item">
             <button
+              role="main-page-logout-button"
               className="btn btn-outline-light btn-sm me-2"
               onClick={handleLogout}
             >
