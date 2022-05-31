@@ -40,6 +40,7 @@ const LoginPage: FC<LoginPageProps> = ({ handleSubmit }) => {
             placeholder="Имя пользователя"
             value={name}
             onChange={handleNameChange}
+            spellCheck={false}
           />
           <label>Имя пользователя</label>
         </div>

@@ -5,6 +5,13 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 export default {
   component: TicTacToeGame,
   title: 'TicTacToe/TicTacToeGame',
+  decorators: [
+    (story) => (
+      <main className="container d-flex justify-content-center pt-3 pb-5">
+        {story()}
+      </main>
+    ),
+  ],
 } as ComponentMeta<typeof TicTacToeGame>;
 
 const Template: ComponentStory<typeof TicTacToeGame> = (args) => (
