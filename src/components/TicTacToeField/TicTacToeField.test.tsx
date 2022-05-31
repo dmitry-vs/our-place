@@ -6,7 +6,6 @@ import {
   TicTacToeCellValues,
   TicTacToeFieldValues,
 } from '../../helpers/consts';
-import { getTicTacToeCellContent } from '../../helpers/utils';
 
 describe('TicTacToeField', () => {
   const values: TicTacToeFieldValues = [
