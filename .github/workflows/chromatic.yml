@@ -1,6 +1,6 @@
 name: 'Chromatic Deployment'
 
-on: pull_request
+on: push
 
 jobs:
   test:
@@ -12,3 +12,6 @@ jobs:
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            Deployed Storybook link:
+            {{ github.url }}
