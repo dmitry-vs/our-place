@@ -3,7 +3,7 @@ name: 'Chromatic Deployment'
 on: push
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -12,6 +12,13 @@ jobs:
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mshick/add-pr-comment@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
           message: |
-            Deployed Storybook link:
-            {{ github.url }}
+            You can check this code at Chromatic with the link
+            https://www.chromatic.com/builds?appId=${{ secrets.CHROMATIC_PROJECT_ID }}
