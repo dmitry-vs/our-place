@@ -40,6 +40,7 @@ const LoginPage: FC<LoginPageProps> = ({ handleSubmit }) => {
         <h3 className="h4 fw-normal mt-5">Введите имя пользователя</h3>
         <div className="form-floating mt-3">
           <input
+            // TODO pattern (Controlled Input)
             role="login-page-user-name-input"
             type="text"
             className="form-control"

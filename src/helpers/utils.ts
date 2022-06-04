@@ -1,7 +1,6 @@
 import { sample } from 'lodash';
 import {
-  TIC_TAC_TOE_CELL_MAX_SIZE,
-  TIC_TAC_TOE_CELL_MIN_SIZE,
+  TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   TIC_TAC_TOE_FIELD_SIZE,
   TicTacToeCellValues,
   TicTacToeFieldValues,
@@ -61,18 +60,59 @@ export const findTicTacToeEmptyCellIndex = (
   return result !== undefined ? result : null;
 };
 
-export const validateTicTacToeCellSizeStr = (value: string) => {
+type NumericInputParams = {
+  value: string;
+  minValue?: number;
+  maxValue?: number;
+};
+
+export const validateNumericInputValue = ({
+  value,
+  minValue,
+  maxValue,
+}: NumericInputParams) => {
   const valueTrimmed = value.trim();
   if (!valueTrimmed) return ValidationErrors.Required;
   if (!/^-?\d+$/.test(valueTrimmed)) return ValidationErrors.NumberExpected;
 
-  const valueNum = Number(valueTrimmed);
-  if (
-    valueNum < TIC_TAC_TOE_CELL_MIN_SIZE ||
-    valueNum > TIC_TAC_TOE_CELL_MAX_SIZE
-  ) {
+  const valueNum = parseInt(valueTrimmed);
+  if (typeof minValue === 'number' && valueNum < minValue)
     return ValidationErrors.OutOfRange;
-  }
+  if (typeof maxValue === 'number' && valueNum > maxValue)
+    return ValidationErrors.OutOfRange;
 
   return null;
+};
+
+export const getRandomFieldValues = (
+  randomFillPercent: number
+): TicTacToeFieldValues => {
+  const result = [...TIC_TAC_TOE_DEFAULT_FIELD_VALUES] as TicTacToeFieldValues;
+  const cellsCount = getFieldRandomCellsCount(randomFillPercent);
+  const cellsIndexes = getFieldRandomCellIndexes(cellsCount);
+
+  cellsIndexes.forEach((index) => {
+    const value = sample([
+      TicTacToeCellValues.Cross,
+      TicTacToeCellValues.Circle,
+    ]);
+    if (value !== undefined) result[index] = value;
+  });
+
+  return result;
+};
+
+export const getFieldRandomCellsCount = (percent: number) =>
+  Math.round((percent / 100) * 9);
+
+export const getFieldRandomCellIndexes = (cellCount: number) => {
+  const indexes = Array.from(Array(9).keys());
+  const result: number[] = [];
+
+  for (let i = 0; i < Math.min(cellCount, 9); i++) {
+    const index = sample(indexes.filter((item) => !result.includes(item)));
+    if (index !== undefined) result.push(index);
+  }
+
+  return result;
 };

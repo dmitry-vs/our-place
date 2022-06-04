@@ -1,94 +1,127 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import {
+  TIC_TAC_TOE_FIELD_DEFAULT_RANDOM_FILL,
   TIC_TAC_TOE_CELL_DEFAULT_SIZE,
   TicTacToeCellValues,
   TicTacToeFieldValues,
   ValidationErrors,
+  TIC_TAC_TOE_GAME_ALERT_ERROR_TEXT,
 } from '../../helpers/consts';
 import TicTacToeGame from './TicTacToeGame';
 import userEvent from '@testing-library/user-event';
 import { findTicTacToeEmptyCellIndex } from '../../helpers/utils';
 
 describe('TicTacToeGame', () => {
-  const gameRole = 'tic-tac-toe-game';
-  const fieldRole = 'tic-tac-toe-field';
-  const symbolSelectRole = 'tic-tac-toe-game-symbol-select';
-  const symbolSelectOptionRole = 'tic-tac-toe-game-symbol-select-option';
-  const startStopButtonRole = 'tic-tac-toe-game-start-stop-button';
-  const statusInfoRole = 'tic-tac-toe-game-status-info';
-  const playerInfoRole = 'tic-tac-toe-game-player-info';
-  const symbolInfoRole = 'tic-tac-toc-game-symbol-info';
-  const resultInfoRole = 'tic-tac-toe-game-result-info';
-  const cellRole = 'tic-tac-toe-cell';
-  const cellSizeInputRole = 'tic-tac-toe-game-cell-size-input';
-  const invalidInputAlertRole = 'tic-tac-toe-game-invalid-input-alert';
+  let game: HTMLElement | null,
+    field: HTMLElement | null,
+    symbolSelect: HTMLSelectElement,
+    symbolSelectOptions: HTMLOptionElement[],
+    cellSizeInput: HTMLInputElement,
+    cellSizeError: HTMLElement,
+    randomFillSwitch: HTMLInputElement,
+    randomFillInput: HTMLInputElement,
+    randomFillError: HTMLElement,
+    invalidInputAlert: HTMLElement | null,
+    statusInfo: HTMLElement | null,
+    playerInfo: HTMLElement | null,
+    symbolInfo: HTMLElement | null,
+    resultInfo: HTMLElement | null,
+    cells: HTMLElement[],
+    startStopButton: HTMLButtonElement;
+
   const user = userEvent.setup();
 
-  const testUser = 'Test User Name';
+  const testUserName = 'Test User Name';
 
   beforeEach(() => {
-    render(<TicTacToeGame user={testUser} />);
+    render(<TicTacToeGame user={testUserName} />);
+    game = screen.queryByRole('tic-tac-toe-game');
+    symbolSelect = screen.getByRole('tic-tac-toe-game-symbol-select');
+    symbolSelectOptions = screen.queryAllByRole(
+      'tic-tac-toe-game-symbol-select-option'
+    );
+    cellSizeInput = screen.getByRole('tic-tac-toe-game-cell-size-input');
+    cellSizeError = screen.getByRole('tic-tac-toe-game-cell-size-error');
+    randomFillSwitch = screen.getByRole('tic-tac-toe-game-random-fill-switch');
+    randomFillInput = screen.getByRole('tic-tac-toe-game-random-fill-input');
+    randomFillError = screen.getByRole('tic-tac-toe-game-random-fill-error');
+    field = screen.queryByRole('tic-tac-toe-field');
+    cells = screen.queryAllByRole('tic-tac-toe-cell');
+    invalidInputAlert = screen.queryByRole(
+      'tic-tac-toe-game-invalid-input-alert'
+    );
+    statusInfo = screen.queryByRole('tic-tac-toe-game-status-info');
+    playerInfo = screen.queryByRole('tic-tac-toe-game-player-info');
+    symbolInfo = screen.queryByRole('tic-tac-toc-game-symbol-info');
+    resultInfo = screen.queryByRole('tic-tac-toe-game-result-info');
+    startStopButton = screen.getByRole('tic-tac-toe-game-start-stop-button');
   });
 
-  test('renders TicTacToeGame with correct elements by default', () => {
-    expect(screen.getByRole(gameRole)).toBeInTheDocument();
-    expect(screen.getByRole(symbolSelectRole)).toBeInTheDocument();
-    expect(screen.getByRole(symbolSelectRole)).toBeEnabled();
-    const options = screen.getAllByRole(
-      symbolSelectOptionRole
-    ) as HTMLOptionElement[];
-    expect(options[0].selected).toBe(true);
-    expect(options[1].selected).toBe(false);
-    expect(screen.getByRole(startStopButtonRole)).toHaveTextContent(
-      'Начать игру'
+  afterEach(() => {
+    cleanup();
+  });
+
+  test('correct initial render', () => {
+    expect(game).toBeInTheDocument();
+    expect(symbolSelect).toBeEnabled();
+    expect(symbolSelectOptions[0].selected).toBe(true);
+    expect(symbolSelectOptions[1].selected).toBe(false);
+    expect(cellSizeInput).toHaveValue(TIC_TAC_TOE_CELL_DEFAULT_SIZE.toString());
+    expect(randomFillInput).toBeDisabled();
+    expect(randomFillInput).toHaveValue(
+      TIC_TAC_TOE_FIELD_DEFAULT_RANDOM_FILL.toString()
     );
-    expect(screen.getByRole(fieldRole)).toHaveClass('fieldInactive');
-    expect(screen.getByRole(statusInfoRole)).toHaveTextContent(
-      'Игра не начата'
-    );
-    expect(screen.getByRole(playerInfoRole)).toHaveTextContent(testUser);
-    expect(screen.getByRole(symbolInfoRole)).toHaveTextContent('Крестики');
-    expect(screen.queryByRole(resultInfoRole)).toBeNull();
+    expect(field).toHaveClass('fieldInactive');
+    expect(invalidInputAlert).toBeNull();
+    expect(statusInfo).toHaveTextContent('Игра не начата');
+    expect(playerInfo).toHaveTextContent(testUserName);
+    expect(symbolInfo).toHaveTextContent('Крестики');
+    expect(resultInfo).toBeNull();
+    expect(startStopButton).toHaveTextContent('Начать игру');
   });
 
   test('correct behaviour on symbol change', async () => {
-    const options = screen.getAllByRole(
-      symbolSelectOptionRole
-    ) as HTMLOptionElement[];
-    await user.selectOptions(screen.getByRole(symbolSelectRole), options[1]);
-    expect(options[0].selected).toBe(false);
-    expect(options[1].selected).toBe(true);
-    expect(screen.getByRole(symbolInfoRole)).toHaveTextContent('Нолики');
+    expect(symbolSelect).toBeTruthy();
+    await user.selectOptions(symbolSelect, symbolSelectOptions[1]);
+    expect(symbolSelectOptions[0].selected).toBe(false);
+    expect(symbolSelectOptions[1].selected).toBe(true);
+    expect(symbolInfo).toHaveTextContent('Нолики');
   });
 
   test('correct behaviour on start button click', async () => {
-    await user.click(screen.getByRole(startStopButtonRole));
-    expect(screen.getByRole(symbolSelectRole)).toBeDisabled();
-    expect(screen.getByRole(startStopButtonRole)).toHaveTextContent(
-      'Завершить игру'
-    );
-    expect(screen.getByRole(fieldRole)).toHaveClass('fieldActive');
-    expect(screen.getByRole(statusInfoRole)).toHaveTextContent('Игра начата');
-    expect(screen.queryByRole(resultInfoRole)).toBeNull();
+    await user.click(startStopButton);
+    expect(symbolSelect).toBeDisabled();
+    expect(randomFillSwitch).toBeDisabled();
+    expect(randomFillInput).toBeDisabled();
+    expect(field).toHaveClass('fieldActive');
+    expect(statusInfo).toHaveTextContent('Игра начата');
+    expect(resultInfo).toBeNull();
+    expect(startStopButton).toHaveTextContent('Завершить игру');
+  });
+
+  test('enable random fill, click start button, then random fill input is disabled', async () => {
+    await user.click(randomFillSwitch);
+    // вводим процент заполненности 20, чтобы игра точно не завершилась сразу после начала
+    await user.clear(randomFillInput);
+    await user.type(randomFillInput, '20');
+
+    await user.click(startStopButton);
+    expect(randomFillInput).toBeDisabled();
   });
 
   test('correct behaviour on stop button click', async () => {
-    const startStopButton = screen.getByRole(startStopButtonRole);
     await user.click(startStopButton);
     await user.click(startStopButton);
-    expect(screen.getByRole(symbolSelectRole)).toBeEnabled();
+    expect(symbolSelect).toBeEnabled();
     expect(startStopButton).toHaveTextContent('Начать игру');
-    expect(screen.getByRole(fieldRole)).toHaveClass('fieldInactive');
-    expect(screen.getByRole(statusInfoRole)).toHaveTextContent(
-      'Игра не начата'
-    );
-    expect(screen.queryByRole(resultInfoRole)).toBeNull();
+    expect(field).toHaveClass('fieldInactive');
+    expect(statusInfo).toHaveTextContent('Игра не начата');
+    expect(resultInfo).toBeNull();
   });
 
   test('correct behaviour on empty cell click', async () => {
-    await user.click(screen.getByRole(startStopButtonRole));
-    const cells = screen.getAllByRole(cellRole);
+    await user.click(startStopButton);
     await user.click(cells[0]);
     expect(cells[0].querySelector('img[alt="Крестик"]')).toBeTruthy();
     expect(
@@ -97,8 +130,7 @@ describe('TicTacToeGame', () => {
   });
 
   test('correct behaviour on non-empty cell click', async () => {
-    await user.click(screen.getByRole(startStopButtonRole));
-    const cells = screen.getAllByRole(cellRole);
+    await user.click(startStopButton);
     await user.click(cells[4]);
     await user.click(cells[4]);
     expect(cells[4].querySelector(`img[alt="Крестик"]`)).toBeTruthy();
@@ -108,10 +140,9 @@ describe('TicTacToeGame', () => {
   });
 
   test('correct behaviour if user plays game to end', async () => {
-    await user.click(screen.getByRole(startStopButtonRole));
+    await user.click(startStopButton);
 
     const makeUserTurn = async () => {
-      const cells = screen.getAllByRole(cellRole);
       const currentFieldValues = cells.map((item) => {
         const img = item.querySelector('img');
         if (!img) return TicTacToeCellValues.Empty;
@@ -127,57 +158,87 @@ describe('TicTacToeGame', () => {
     // 5 ходов всегда достаточно для завершения игры
     for (let i = 0; i < 5; i++) await makeUserTurn();
 
-    expect(screen.getByRole(symbolSelectRole)).toBeEnabled();
-    expect(screen.getByRole(startStopButtonRole)).toHaveTextContent(
-      'Начать игру'
-    );
-    expect(screen.getByRole(fieldRole)).toHaveClass('fieldInactive');
-    expect(screen.getByRole(statusInfoRole)).toHaveTextContent('Игра окончена');
-    const resultInfo = screen.getByRole(resultInfoRole);
-    expect(resultInfo).toBeInTheDocument();
+    expect(symbolSelect).toBeEnabled();
+    expect(startStopButton).toHaveTextContent('Начать игру');
+    expect(field).toHaveClass('fieldInactive');
+    expect(statusInfo).toHaveTextContent('Игра окончена');
+    resultInfo = screen.getByRole('tic-tac-toe-game-result-info');
+    expect(resultInfo).toBeTruthy();
     expect(
       ['Пользователь победил', 'Пользователь проиграл', 'Ничья'].includes(
-        resultInfo.textContent as string
+        (resultInfo as HTMLElement).textContent as string
       )
     ).toBe(true);
   });
 
-  test('cell size input has correct default value', () => {
-    const cellSizeInput = screen.getByRole(cellSizeInputRole);
-    expect(cellSizeInput).toHaveValue(TIC_TAC_TOE_CELL_DEFAULT_SIZE.toString());
-  });
-
   test('show game field when cell size value is valid', async () => {
-    const cellSizeInput = screen.getByRole(cellSizeInputRole);
     await user.clear(cellSizeInput);
     await user.type(cellSizeInput, '100');
-    expect(screen.getByRole(fieldRole)).toBeInTheDocument();
-    expect(screen.queryByRole(invalidInputAlertRole)).toBeNull();
+    expect(field).toBeTruthy();
+    expect(invalidInputAlert).toBeNull();
   });
 
-  test('show alert with error message when cell size value is invalid', async () => {
-    const cellSizeInput = screen.getByRole(cellSizeInputRole);
+  test('input invalid cell size, then render correct error message and alert', async () => {
+    const fieldRole = 'tic-tac-toe-field';
+    const alertRole = 'tic-tac-toe-game-invalid-input-alert';
 
     // try empty value
     await user.clear(cellSizeInput);
     expect(screen.queryByRole(fieldRole)).toBeNull();
-    expect(screen.getByRole(invalidInputAlertRole)).toHaveTextContent(
-      ValidationErrors.Required
+    expect(cellSizeError).toHaveTextContent(ValidationErrors.Required);
+    expect(screen.getByRole(alertRole)).toHaveTextContent(
+      TIC_TAC_TOE_GAME_ALERT_ERROR_TEXT
     );
 
     // try value out of range
     await user.type(cellSizeInput, '200');
     expect(screen.queryByRole(fieldRole)).toBeNull();
-    expect(screen.getByRole(invalidInputAlertRole)).toHaveTextContent(
-      ValidationErrors.OutOfRange
+    expect(cellSizeError).toHaveTextContent(ValidationErrors.OutOfRange);
+    expect(screen.getByRole(alertRole)).toHaveTextContent(
+      TIC_TAC_TOE_GAME_ALERT_ERROR_TEXT
     );
 
     // try non-numeric value
     await user.clear(cellSizeInput);
     await user.type(cellSizeInput, 'test');
     expect(screen.queryByRole(fieldRole)).toBeNull();
-    expect(screen.getByRole(invalidInputAlertRole)).toHaveTextContent(
-      ValidationErrors.NumberExpected
+    expect(cellSizeError).toHaveTextContent(ValidationErrors.NumberExpected);
+    expect(screen.getByRole(alertRole)).toHaveTextContent(
+      TIC_TAC_TOE_GAME_ALERT_ERROR_TEXT
     );
+  });
+
+  test('input invalid random fill value, then render errors and start button disabled', async () => {
+    const fieldRole = 'tic-tac-toe-field';
+    const alertRole = 'tic-tac-toe-game-invalid-input-alert';
+    await user.click(randomFillSwitch);
+
+    // try empty value
+    await user.clear(randomFillInput);
+    expect(screen.queryByRole(fieldRole)).toBeNull();
+    expect(randomFillError).toHaveTextContent(ValidationErrors.Required);
+    expect(screen.getByRole(alertRole)).toHaveTextContent(
+      TIC_TAC_TOE_GAME_ALERT_ERROR_TEXT
+    );
+    expect(startStopButton).toBeDisabled();
+
+    // try value out of range
+    await user.type(randomFillInput, '200');
+    expect(screen.queryByRole(fieldRole)).toBeNull();
+    expect(randomFillError).toHaveTextContent(ValidationErrors.OutOfRange);
+    expect(screen.getByRole(alertRole)).toHaveTextContent(
+      TIC_TAC_TOE_GAME_ALERT_ERROR_TEXT
+    );
+    expect(startStopButton).toBeDisabled();
+
+    // try non-numeric value
+    await user.clear(randomFillInput);
+    await user.type(randomFillInput, 'test');
+    expect(screen.queryByRole(fieldRole)).toBeNull();
+    expect(randomFillError).toHaveTextContent(ValidationErrors.NumberExpected);
+    expect(screen.getByRole(alertRole)).toHaveTextContent(
+      TIC_TAC_TOE_GAME_ALERT_ERROR_TEXT
+    );
+    expect(startStopButton).toBeDisabled();
   });
 });

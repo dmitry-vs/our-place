@@ -10,6 +10,7 @@ type TicTacToeCellProps = {
   className?: string;
 };
 
+// TODO pattern (Presentation Component)
 const TicTacToeCell: FC<TicTacToeCellProps> = ({
   handleClick,
   className,
