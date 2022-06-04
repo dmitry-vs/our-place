@@ -24,6 +24,7 @@ import {
 } from '../../helpers/utils';
 import { css } from '@emotion/css';
 import clsx from 'clsx';
+import Button from '../Button';
 
 type TicTacToeGameProps = {
   user: string;
@@ -381,19 +382,19 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
           </tbody>
         </table>
 
-        <button
+        <Button
+          role="tic-tac-toe-game-start-stop-button"
+          color={
+            status === TicTacToeGameStatuses.Stopped ? 'success' : 'danger'
+          }
+          disabled={randomFillEnabled && !!randomFillValueError}
+          onClick={this.handleStartStopButtonClick}
           className={clsx(
-            'btn d-block w-100',
-            status === TicTacToeGameStatuses.Stopped
-              ? 'btn-outline-success'
-              : 'btn-outline-danger',
+            'd-block w-100',
             css`
               margin-top: 35px;
             `
           )}
-          disabled={randomFillEnabled && !!randomFillValueError}
-          onClick={this.handleStartStopButtonClick}
-          role="tic-tac-toe-game-start-stop-button"
         >
           {(function () {
             if (status === TicTacToeGameStatuses.Started)
@@ -402,7 +403,7 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
               ? `Начать игру (случайное заполнение)`
               : 'Начать игру';
           })()}
-        </button>
+        </Button>
       </div>
     );
   }
