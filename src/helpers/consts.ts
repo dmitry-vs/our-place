@@ -53,3 +53,5 @@ export const enum ValidationErrors {
   NumberExpected = 'Необходимо ввести числовое значение',
   OutOfRange = 'Значение должно находиться в допустимом диапазоне',
 }
+
+export const APP_NAME = 'Our Place';

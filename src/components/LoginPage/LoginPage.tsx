@@ -1,5 +1,6 @@
 import React, { ChangeEventHandler, FC, SyntheticEvent, useState } from 'react';
 import { css } from '@emotion/css';
+import { APP_NAME } from '../../helpers/consts';
 
 type LoginPageProps = {
   handleSubmit: (_: string) => void;
@@ -30,7 +31,12 @@ const LoginPage: FC<LoginPageProps> = ({ handleSubmit }) => {
         `}
         onSubmit={handleFormSubmit}
       >
-        <h1 className="display-5 m-0 fw-bold font-monospace">Our Place</h1>
+        <h1
+          role="login-page-heading"
+          className="display-5 m-0 fw-bold font-monospace"
+        >
+          {APP_NAME}
+        </h1>
         <h3 className="h4 fw-normal mt-5">Введите имя пользователя</h3>
         <div className="form-floating mt-3">
           <input

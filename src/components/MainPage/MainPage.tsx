@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import TicTacToeGame from '../TicTacToeGame';
+import { APP_NAME } from '../../helpers/consts';
 
 type MainPageProps = {
   userName: string;
@@ -10,8 +11,8 @@ const MainPage: FC<MainPageProps> = ({ userName, handleLogout }) => {
   return (
     <div role="main-page" className="h-100 d-flex flex-column">
       <header className="navbar navbar-dark bg-dark">
-        <div className="navbar-brand">
-          <span className="font-monospace fw-bold ms-3">Our Place</span>
+        <div role="main-page-brand" className="navbar-brand">
+          <span className="font-monospace fw-bold ms-3">{APP_NAME}</span>
         </div>
         <div
           role="main-page-user-name"
@@ -31,7 +32,10 @@ const MainPage: FC<MainPageProps> = ({ userName, handleLogout }) => {
           </div>
         </div>
       </header>
-      <main className="container flex-grow-1 py-4 d-flex justify-content-center">
+      <main
+        role="main-page-content"
+        className="container flex-grow-1 py-4 d-flex justify-content-center"
+      >
         <TicTacToeGame user={userName} />
       </main>
     </div>
