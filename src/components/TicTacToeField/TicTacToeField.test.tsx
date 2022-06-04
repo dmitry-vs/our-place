@@ -2,7 +2,6 @@ import React from 'react';
 import TicTacToeField from './TicTacToeField';
 import { render, screen } from '@testing-library/react';
 import {
-  TIC_TAC_TOE_CELL_CONTENT_MAPPING,
   TIC_TAC_TOE_FIELD_SIZE,
   TicTacToeCellValues,
   TicTacToeFieldValues,
@@ -38,9 +37,16 @@ describe('TicTacToeField', () => {
     );
     const cells = screen.getAllByRole('tic-tac-toe-cell');
     cells.forEach((item, index) => {
-      expect(item.textContent).toBe(
-        TIC_TAC_TOE_CELL_CONTENT_MAPPING[values[index]]
-      );
+      const cellValue = values[index];
+      const cellImg = item.querySelector('img');
+      if (cellValue === TicTacToeCellValues.Empty) {
+        expect(cellImg).toBeNull();
+      } else {
+        const alt = cellImg?.getAttribute('alt');
+        expect(alt).toEqual(
+          cellValue === TicTacToeCellValues.Cross ? 'Крестик' : 'Нолик'
+        );
+      }
     });
   });
 });

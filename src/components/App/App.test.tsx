@@ -1,107 +1,65 @@
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import App from './App';
-import axios, { AxiosResponse } from 'axios';
-import { User } from '../../helpers/consts';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
-
 describe('App', () => {
-  const headingTextRole = 'app-heading-text';
-  const userSettingsRole = 'app-user-settings';
-  const userSelectRole = 'app-user-select';
-  const userSelectOptionRole = 'app-user-select-option';
-  const chooseUserTextRole = 'app-choose-user-text';
-  const gameRole = 'tic-tac-toe-game';
+  const loginPageRole = 'login-page';
+  const mainPageRole = 'main-page';
+  const userNameInputRole = 'login-page-user-name-input';
+  const loginButtonRole = 'login-page-submit-button';
+  const userNameRole = 'main-page-user-name';
+  const logoutButtonRole = 'main-page-logout-button';
   const user = userEvent.setup();
 
-  const testUsers: User[] = [
-    {
-      id: 1,
-      name: 'Test User Name 1',
-      email: 'test-user-email-1@test.ru',
-    },
-    {
-      id: 2,
-      name: 'Test User Name 2',
-      email: 'test-user-email-2@test.ru',
-    },
-  ];
-
-  const testResponse: AxiosResponse = {
-    data: testUsers,
-    status: 200,
-    statusText: 'OK',
-    headers: {},
-    config: {},
-  };
+  const testUserName = 'Test User';
 
   beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
-  test('correct initial render with loading message', async () => {
-    const promise = Promise.resolve(testResponse);
-    mockedAxios.get.mockImplementationOnce(() => promise);
     render(<App />);
-
-    expect(screen.getByRole(headingTextRole)).toBeInTheDocument();
-    expect(screen.getByRole(userSettingsRole)).toHaveTextContent(
-      'Загрузка пользователей...'
-    );
-    expect(screen.queryByRole(userSelectRole)).toBeNull();
-    expect(screen.getByRole(chooseUserTextRole)).toHaveTextContent(
-      'необходимо выбрать пользователя'
-    );
-
-    await act(async () => {
-      promise;
-    });
   });
 
-  test('show users select when users list loaded successfully', async () => {
-    mockedAxios.get.mockResolvedValueOnce(testResponse);
-    await act(async () => {
-      render(<App />);
-    });
-
-    expect(screen.getByRole(userSettingsRole)).toHaveTextContent(
-      'Выбор пользователя:'
-    );
-    expect(screen.getByRole(userSelectRole)).toBeInTheDocument();
-    const options = screen.getAllByRole(
-      userSelectOptionRole
-    ) as HTMLOptionElement[];
-    expect(options[0].selected).toBe(true);
+  test('show login page on initial render', () => {
+    expect(screen.getByRole(loginPageRole)).toBeInTheDocument();
+    expect(screen.getByRole(userNameInputRole)).toBeInTheDocument();
+    expect(screen.getByRole(loginButtonRole)).toBeInTheDocument();
+    expect(screen.queryByRole(mainPageRole)).toBeNull();
   });
 
-  test('show error message when users list failed to load', async () => {
-    mockedAxios.get.mockRejectedValueOnce(new Error('Request failed'));
-    await act(async () => {
-      render(<App />);
-    });
+  test('show main page after login', async () => {
+    const input = screen.getByRole(userNameInputRole);
+    await user.type(input, testUserName);
+    await user.click(screen.getByRole(loginButtonRole));
 
-    expect(screen.getByRole(userSettingsRole)).toHaveTextContent(
-      'Ошибка при загрузке пользователей'
-    );
-    expect(screen.queryByRole(userSelectRole)).toBeNull();
-    expect(screen.getByRole(chooseUserTextRole)).toBeInTheDocument();
+    expect(screen.getByRole(mainPageRole)).toBeInTheDocument();
+    expect(screen.getByRole(userNameRole)).toHaveTextContent(testUserName);
+    screen.debug();
   });
 
-  test('show game when some user is selected', async () => {
-    mockedAxios.get.mockResolvedValueOnce(testResponse);
-    await act(async () => {
-      render(<App />);
-    });
-    const options = screen.getAllByRole(
-      userSelectOptionRole
-    ) as HTMLOptionElement[];
-    await user.selectOptions(screen.getByRole(userSelectRole), options[1]);
+  test('show login page after logout', async () => {
+    // login
+    const input = screen.getByRole(userNameInputRole);
+    await user.type(input, testUserName);
+    await user.click(screen.getByRole(loginButtonRole));
+    // logout
+    await user.click(screen.getByRole(logoutButtonRole));
 
-    expect(options[1].selected).toBe(true);
-    expect(screen.queryByRole(chooseUserTextRole)).toBeNull();
-    expect(screen.getByRole(gameRole)).toBeInTheDocument();
+    expect(screen.queryByRole(mainPageRole)).toBeNull();
+    expect(screen.getByRole(loginPageRole)).toBeInTheDocument();
+  });
+
+  test('cannot login with empty or whitespace user name', async () => {
+    const input = screen.getByRole(userNameInputRole);
+    const loginButton = screen.getByRole(loginButtonRole);
+
+    // try empty name
+    expect(loginButton).toBeDisabled();
+    await user.click(loginButton);
+    expect(screen.queryByRole(mainPageRole)).toBeNull();
+
+    // try whitespace name
+    await user.type(input, ' ');
+    expect(loginButton).toBeDisabled();
+    await user.click(loginButton);
+    expect(screen.queryByRole(mainPageRole)).toBeNull();
   });
 });

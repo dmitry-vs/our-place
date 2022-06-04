@@ -1,8 +1,8 @@
-import React, { Component, MouseEventHandler } from 'react';
-import {
-  TicTacToeCellValues,
-  TIC_TAC_TOE_CELL_CONTENT_MAPPING,
-} from '../../helpers/consts';
+import React, { FC, MouseEventHandler } from 'react';
+import { TicTacToeCellValues } from '../../helpers/consts';
+import Cross from '../../assets/icons/cross.svg';
+import Circle from '../../assets/icons/circle.svg';
+import s from './TicTacToeCell.module.scss';
 
 type TicTacToeCellProps = {
   value: TicTacToeCellValues;
@@ -10,29 +10,47 @@ type TicTacToeCellProps = {
   className?: string;
 };
 
-class TicTacToeCell extends Component<TicTacToeCellProps> {
-  shouldComponentUpdate(nextProps: Readonly<TicTacToeCellProps>): boolean {
-    const { value, handleClick, className } = this.props;
+const TicTacToeCell: FC<TicTacToeCellProps> = ({
+  handleClick,
+  className,
+  value,
+}) => {
+  const renderCellContent = () => {
+    if (value === TicTacToeCellValues.Empty) return null;
 
-    if (value !== nextProps.value || handleClick !== nextProps.handleClick) {
-      return true;
-    }
+    const imgParamsMapping = {
+      [TicTacToeCellValues.Cross]: {
+        src: Cross,
+        alt: 'Крестик',
+        height: 45,
+        width: 45,
+      },
+      [TicTacToeCellValues.Circle]: {
+        src: Circle,
+        alt: 'Нолик',
+        height: 30,
+        width: 30,
+      },
+    };
+    const { src, alt, height, width } = imgParamsMapping[value];
 
     return (
-      (!className && !!nextProps.className) ||
-      (!!className && !nextProps.className)
+      <img
+        role="tic-tac-toe-cell-img"
+        className={s.animated}
+        src={src}
+        alt={alt}
+        height={`${height}px`}
+        width={`${width}px`}
+      />
     );
-  }
+  };
 
-  render() {
-    const { value, handleClick, className } = this.props;
-
-    return (
-      <div role="tic-tac-toe-cell" onClick={handleClick} className={className}>
-        {TIC_TAC_TOE_CELL_CONTENT_MAPPING[value]}
-      </div>
-    );
-  }
-}
+  return (
+    <div role="tic-tac-toe-cell" onClick={handleClick} className={className}>
+      {renderCellContent()}
+    </div>
+  );
+};
 
 export default TicTacToeCell;
