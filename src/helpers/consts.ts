@@ -4,12 +4,6 @@ export const enum TicTacToeCellValues {
   Circle,
 }
 
-export const TIC_TAC_TOE_CELL_CONTENT_MAPPING = {
-  [TicTacToeCellValues.Empty]: '',
-  [TicTacToeCellValues.Cross]: 'X',
-  [TicTacToeCellValues.Circle]: 'O',
-};
-
 export const TIC_TAC_TOE_FIELD_SIZE = 3;
 
 export type TicTacToeFieldValues = [
@@ -62,3 +56,7 @@ export const enum ValidationErrors {
 }
 
 export const APP_NAME = 'Our Place';
+
+export const enum LocalStorageKeys {
+  UserName = 'userName',
+}

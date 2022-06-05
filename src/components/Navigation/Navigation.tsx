@@ -1,11 +1,5 @@
 import React, { FC } from 'react';
-import {
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Pages } from '../../helpers/routes';
 import MainPage from '../MainPage';
 import LoginPage from '../LoginPage';
@@ -14,15 +8,13 @@ import { useAuthContext } from '../AuthProvider';
 const Navigation: FC = () => {
   const { userName, login, logout } = useAuthContext();
   const location = useLocation();
-  const navigate = useNavigate();
+  const state = location.state as { from?: Location };
 
-  const handleLogin = (userName: string) => {
-    login(userName);
-    const state = location.state as { from?: Location };
-    navigate(state?.from || Pages.Main);
-  };
-
-  const loginElement = <LoginPage handleLogin={handleLogin} />;
+  const loginElement = userName ? (
+    <Navigate to={state?.from || Pages.Main} replace />
+  ) : (
+    <LoginPage handleLogin={login} />
+  );
 
   const mainElement = userName ? (
     <MainPage userName={userName} handleLogout={logout} />

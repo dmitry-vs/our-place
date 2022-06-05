@@ -11,4 +11,4 @@ export default {
 
 const Template: ComponentStory<typeof App> = () => <App />;
 
-export const Default = Template.bind({});
+export const Example = Template.bind({});

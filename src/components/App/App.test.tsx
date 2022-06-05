@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import App from './App';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
@@ -18,6 +18,11 @@ describe('App', () => {
     render(<App />, { wrapper: BrowserRouter });
   });
 
+  afterEach(() => {
+    cleanup();
+    localStorage.clear();
+  });
+
   test('show login page on initial render', () => {
     expect(screen.getByRole(loginPageRole)).toBeInTheDocument();
     expect(screen.getByRole(userNameInputRole)).toBeInTheDocument();
@@ -32,7 +37,6 @@ describe('App', () => {
 
     expect(screen.getByRole(mainPageRole)).toBeInTheDocument();
     expect(screen.getByRole(userNameRole)).toHaveTextContent(testUserName);
-    screen.debug();
   });
 
   test('show login page after logout', async () => {

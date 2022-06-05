@@ -3,17 +3,19 @@ import React, {
   FC,
   PropsWithChildren,
   useContext,
+  useEffect,
   useState,
 } from 'react';
+import { LocalStorageKeys } from '../../helpers/consts';
 
 export type AuthContextType = {
-  userName: string;
+  userName: string | null;
   login: (_: string) => void;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
-  userName: '',
+  userName: null,
   login: () => undefined,
   logout: () => undefined,
 });
@@ -21,10 +23,17 @@ const AuthContext = createContext<AuthContextType>({
 export const useAuthContext = (): AuthContextType => useContext(AuthContext);
 
 export const AuthProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState<string | null>(
+    localStorage.getItem(LocalStorageKeys.UserName)
+  );
+
+  useEffect(() => {
+    if (userName) localStorage.setItem(LocalStorageKeys.UserName, userName);
+    else localStorage.removeItem(LocalStorageKeys.UserName);
+  }, [userName]);
 
   const login = (userName: string) => setUserName(userName);
-  const logout = () => setUserName('');
+  const logout = () => setUserName(null);
 
   return (
     <AuthContext.Provider value={{ userName, login, logout }}>

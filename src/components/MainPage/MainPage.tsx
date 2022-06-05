@@ -5,7 +5,7 @@ import { Screens } from '../../helpers/routes';
 import GameScreen from '../GameScreen';
 
 type MainPageProps = {
-  userName: string;
+  userName: string | null;
   handleLogout: () => void;
 };
 
@@ -36,7 +36,10 @@ const MainPage: FC<MainPageProps> = ({ userName, handleLogout }) => {
       </header>
       <main role="main-page-content" className="flex-grow-1">
         <Routes>
-          <Route path={Screens.Game} element={<GameScreen />} />
+          <Route
+            path={Screens.Game}
+            element={<GameScreen userName={userName} />}
+          />
           <Route path="*" element={<Navigate to={Screens.Game} replace />} />
         </Routes>
       </main>
