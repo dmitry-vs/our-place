@@ -16,11 +16,9 @@ type TicTacToeFieldProps = {
   className?: string;
 };
 
-// TODO pattern (Destructuring Props)
 const TicTacToeField: FC<TicTacToeFieldProps> = ({
   values,
   handleCellClick,
-  // TODO pattern (Default Props)
   cellSize = TIC_TAC_TOE_CELL_DEFAULT_SIZE,
   className,
 }) => {

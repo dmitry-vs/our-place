@@ -84,7 +84,6 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
   }
 
   handleTextInputChange(e: FormEvent<HTMLInputElement>) {
-    // TODO pattern (Switch Event)
     const { name, value } = e.currentTarget;
     if (name === 'cell-size') {
       this.setState({ cellSize: value });
@@ -259,7 +258,6 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
           <div className="col">
             <div className="form-floating">
               <input
-                // TODO pattern (Controlled Input)
                 role="tic-tac-toe-game-cell-size-input"
                 type="text"
                 name="cell-size"
@@ -284,7 +282,6 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
           <div className="col d-flex flex-column justify-content-evenly">
             <div className="form-check form-switch">
               <input
-                // TODO pattern (Controlled Input)
                 role="tic-tac-toe-game-random-fill-switch"
                 className="form-check-input"
                 type="checkbox"
@@ -303,7 +300,6 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
           <div className="col">
             <div className="form-floating">
               <input
-                // TODO pattern (Controlled Input)
                 role="tic-tac-toe-game-random-fill-input"
                 type="text"
                 name="random-fill"
@@ -328,7 +324,6 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
           </div>
         </div>
 
-        {/* TODO pattern (Conditional Rendering) */}
         {!!cellSizeError || (randomFillEnabled && !!randomFillValueError) ? (
           <div
             role="tic-tac-toe-game-invalid-input-alert"

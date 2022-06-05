@@ -13,5 +13,5 @@ const Template: ComponentStory<typeof LoginPage> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  handleSubmit: (name) => alert(`User name: ${name}`),
+  handleLogin: (userName) => alert(`Login, user name: ${userName}`),
 };

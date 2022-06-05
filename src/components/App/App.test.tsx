@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 import userEvent from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
 
 describe('App', () => {
   const loginPageRole = 'login-page';
@@ -11,11 +12,10 @@ describe('App', () => {
   const userNameRole = 'main-page-user-name';
   const logoutButtonRole = 'main-page-logout-button';
   const user = userEvent.setup();
-
   const testUserName = 'Test User';
 
   beforeEach(() => {
-    render(<App />);
+    render(<App />, { wrapper: BrowserRouter });
   });
 
   test('show login page on initial render', () => {

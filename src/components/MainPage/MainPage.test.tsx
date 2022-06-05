@@ -3,6 +3,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MainPage from './MainPage';
 import { APP_NAME } from '../../helpers/consts';
+import { BrowserRouter } from 'react-router-dom';
 
 describe('MainPage', () => {
   const user = userEvent.setup();
@@ -17,7 +18,8 @@ describe('MainPage', () => {
   beforeEach(() => {
     handleLogoutMock = jest.fn();
     render(
-      <MainPage userName={testUserName} handleLogout={handleLogoutMock} />
+      <MainPage userName={testUserName} handleLogout={handleLogoutMock} />,
+      { wrapper: BrowserRouter }
     );
     page = screen.getByRole('main-page');
     brand = screen.getByRole('main-page-brand');

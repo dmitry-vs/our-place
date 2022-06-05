@@ -26,10 +26,7 @@ Circle.args = { value: TicTacToeCellValues.Circle };
 export const Clickable = Template.bind({});
 Clickable.args = {
   value: TicTacToeCellValues.Cross,
-  handleClick: () => {
-    // eslint-disable-next-line no-console
-    console.log('cell clicked');
-  },
+  handleClick: () => alert('Cell click'),
 };
 
 export const Styled = Template.bind({});

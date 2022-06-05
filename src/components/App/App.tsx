@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
-import LoginPage from '../LoginPage';
-import MainPage from '../MainPage';
+import { AuthProvider } from '../AuthProvider';
+import Navigation from '../Navigation';
 
-type AppState = {
-  userName: string | null;
-};
-
-class App extends Component<{}, AppState> {
-  state: AppState = {
-    userName: null,
-  };
-
+class App extends Component<{}> {
   componentDidMount() {
     window.addEventListener('unhandledrejection', this.handlePromiseRejection);
   }
@@ -27,28 +19,11 @@ class App extends Component<{}, AppState> {
     console.log('Promise rejection error:', e);
   };
 
-  handleLoginSubmit = (userName: string) => {
-    this.setState({ userName });
-  };
-
-  handleLogoutClick = () => {
-    this.setState({ userName: null });
-  };
-
   render() {
-    const { userName } = this.state;
-
-    return userName ? (
-      <MainPage
-        userName={userName}
-        // TODO pattern (State Hoisting)
-        handleLogout={this.handleLogoutClick}
-      />
-    ) : (
-      <LoginPage
-        // TODO pattern (State Hoisting)
-        handleSubmit={this.handleLoginSubmit}
-      />
+    return (
+      <AuthProvider>
+        <Navigation />
+      </AuthProvider>
     );
   }
 }
