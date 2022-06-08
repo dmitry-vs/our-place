@@ -39,9 +39,16 @@ class App extends Component<{}, AppState> {
     const { userName } = this.state;
 
     return userName ? (
-      <MainPage userName={userName} handleLogout={this.handleLogoutClick} />
+      <MainPage
+        userName={userName}
+        // TODO pattern (State Hoisting)
+        handleLogout={this.handleLogoutClick}
+      />
     ) : (
-      <LoginPage handleSubmit={this.handleLoginSubmit} />
+      <LoginPage
+        // TODO pattern (State Hoisting)
+        handleSubmit={this.handleLoginSubmit}
+      />
     );
   }
 }

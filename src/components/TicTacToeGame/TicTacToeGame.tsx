@@ -4,6 +4,10 @@ import {
   TIC_TAC_TOE_CELL_MAX_SIZE,
   TIC_TAC_TOE_CELL_MIN_SIZE,
   TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
+  TIC_TAC_TOE_FIELD_DEFAULT_RANDOM_FILL,
+  TIC_TAC_TOE_FIELD_MAX_RANDOM_FILL,
+  TIC_TAC_TOE_FIELD_MIN_RANDOM_FILL,
+  TIC_TAC_TOE_GAME_ALERT_ERROR_TEXT,
   TicTacToeCellValues,
   TicTacToeFieldValues,
   TicTacToeGameResults,
@@ -14,11 +18,13 @@ import TicTacToeField from '../TicTacToeField';
 import s from './TicTacToeGame.module.scss';
 import {
   findTicTacToeEmptyCellIndex,
+  getRandomFieldValues,
   getTicTacToeGameResult,
-  validateTicTacToeCellSizeStr,
+  validateNumericInputValue,
 } from '../../helpers/utils';
 import { css } from '@emotion/css';
 import clsx from 'clsx';
+import Button from '../Button';
 
 type TicTacToeGameProps = {
   user: string;
@@ -30,7 +36,8 @@ type TicTacToeGameState = {
   fieldValues: TicTacToeFieldValues;
   playerSymbol: TicTacToeGameSymbols;
   cellSize: string;
-  cellSizeError: string;
+  randomFillEnabled: boolean;
+  randomFillValue: string;
   result: TicTacToeGameResults | null;
 };
 
@@ -39,7 +46,8 @@ const initialState: TicTacToeGameState = {
   fieldValues: TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   playerSymbol: TicTacToeGameSymbols.Cross,
   cellSize: TIC_TAC_TOE_CELL_DEFAULT_SIZE.toString(),
-  cellSizeError: 'error',
+  randomFillEnabled: false,
+  randomFillValue: TIC_TAC_TOE_FIELD_DEFAULT_RANDOM_FILL.toString(),
   result: null,
 };
 
@@ -48,7 +56,9 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
     super(props);
     this.state = initialState;
     this.handlePlayerSymbolChange = this.handlePlayerSymbolChange.bind(this);
-    this.handleCellSizeChange = this.handleCellSizeChange.bind(this);
+    this.handleTextInputChange = this.handleTextInputChange.bind(this);
+    this.handleRandomFillEnabledChange =
+      this.handleRandomFillEnabledChange.bind(this);
     this.handleStartStopButtonClick =
       this.handleStartStopButtonClick.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
@@ -69,25 +79,43 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
     });
   }
 
-  handleCellSizeChange(e: FormEvent<HTMLInputElement>) {
-    this.setState({
-      cellSize: e.currentTarget.value,
-    });
+  handleRandomFillEnabledChange(e: FormEvent<HTMLInputElement>) {
+    this.setState({ randomFillEnabled: e.currentTarget.checked });
+  }
+
+  handleTextInputChange(e: FormEvent<HTMLInputElement>) {
+    // TODO pattern (Switch Event)
+    const { name, value } = e.currentTarget;
+    if (name === 'cell-size') {
+      this.setState({ cellSize: value });
+    } else if (name === 'random-fill') {
+      this.setState({ randomFillValue: value });
+    }
   }
 
   handleStartStopButtonClick() {
-    const { status } = this.state;
+    const { status, randomFillEnabled, randomFillValue } = this.state;
+
     if (status === TicTacToeGameStatuses.Started) {
-      this.setState({
-        status: TicTacToeGameStatuses.Stopped,
-      });
-    } else {
-      this.setState({
-        status: TicTacToeGameStatuses.Started,
-        fieldValues: TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
-        result: null,
-      });
+      this.setState({ status: TicTacToeGameStatuses.Stopped });
+      return;
     }
+
+    const fieldValues = randomFillEnabled
+      ? getRandomFieldValues(parseInt(randomFillValue))
+      : TIC_TAC_TOE_DEFAULT_FIELD_VALUES;
+    const result = randomFillEnabled
+      ? getTicTacToeGameResult(fieldValues)
+      : null;
+    const gameStatus =
+      result !== null
+        ? TicTacToeGameStatuses.Stopped
+        : TicTacToeGameStatuses.Started;
+    this.setState({
+      status: gameStatus,
+      fieldValues,
+      result,
+    });
   }
 
   handleCellClick(index: number) {
@@ -177,8 +205,25 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
 
   render() {
     const { user, className } = this.props;
-    const { fieldValues, playerSymbol, status, cellSize } = this.state;
-    const cellSizeError = validateTicTacToeCellSizeStr(cellSize);
+    const {
+      fieldValues,
+      playerSymbol,
+      status,
+      cellSize,
+      randomFillEnabled,
+      randomFillValue,
+    } = this.state;
+
+    const cellSizeError = validateNumericInputValue({
+      value: cellSize,
+      minValue: TIC_TAC_TOE_CELL_MIN_SIZE,
+      maxValue: TIC_TAC_TOE_CELL_MAX_SIZE,
+    });
+    const randomFillValueError = validateNumericInputValue({
+      value: randomFillValue,
+      minValue: TIC_TAC_TOE_FIELD_MIN_RANDOM_FILL,
+      maxValue: TIC_TAC_TOE_FIELD_MAX_RANDOM_FILL,
+    });
 
     return (
       <div role="tic-tac-toe-game" className={clsx(s.game, className)}>
@@ -214,20 +259,84 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
           <div className="col">
             <div className="form-floating">
               <input
+                // TODO pattern (Controlled Input)
                 role="tic-tac-toe-game-cell-size-input"
                 type="text"
-                className={clsx('form-control', {
-                  'is-invalid': !!cellSizeError,
-                })}
+                name="cell-size"
+                className={clsx(
+                  'form-control',
+                  !!cellSizeError && 'is-invalid'
+                )}
                 value={cellSize}
-                onChange={this.handleCellSizeChange}
+                onChange={this.handleTextInputChange}
               />
               <label>{`Размер ячейки, px (от ${TIC_TAC_TOE_CELL_MIN_SIZE} до ${TIC_TAC_TOE_CELL_MAX_SIZE})`}</label>
+              <div
+                role="tic-tac-toe-game-cell-size-error"
+                className="invalid-feedback"
+              >
+                {cellSizeError}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row g-2 mt-2">
+          <div className="col d-flex flex-column justify-content-evenly">
+            <div className="form-check form-switch">
+              <input
+                // TODO pattern (Controlled Input)
+                role="tic-tac-toe-game-random-fill-switch"
+                className="form-check-input"
+                type="checkbox"
+                checked={randomFillEnabled}
+                onChange={this.handleRandomFillEnabledChange}
+                disabled={status === TicTacToeGameStatuses.Started}
+              />
+              <label className="form-check-label ms-1">
+                Случайное заполнение
+              </label>
+            </div>
+            <div className="small text-muted">
+              (игра может сразу завершиться)
+            </div>
+          </div>
+          <div className="col">
+            <div className="form-floating">
+              <input
+                // TODO pattern (Controlled Input)
+                role="tic-tac-toe-game-random-fill-input"
+                type="text"
+                name="random-fill"
+                className={clsx(
+                  'form-control',
+                  !!randomFillValueError && randomFillEnabled && 'is-invalid'
+                )}
+                value={randomFillValue}
+                onChange={this.handleTextInputChange}
+                disabled={
+                  !randomFillEnabled || status === TicTacToeGameStatuses.Started
+                }
+              />
+              <label>{`Процент заполнения (от ${TIC_TAC_TOE_FIELD_MIN_RANDOM_FILL} до ${TIC_TAC_TOE_FIELD_MAX_RANDOM_FILL})`}</label>
+              <div
+                role="tic-tac-toe-game-random-fill-error"
+                className="invalid-feedback"
+              >
+                {randomFillValueError}
+              </div>
             </div>
           </div>
         </div>
 
-        {cellSizeError === null ? (
+        {/* TODO pattern (Conditional Rendering) */}
+        {!!cellSizeError || (randomFillEnabled && !!randomFillValueError) ? (
+          <div
+            role="tic-tac-toe-game-invalid-input-alert"
+            className="alert alert-danger my-5"
+          >
+            {TIC_TAC_TOE_GAME_ALERT_ERROR_TEXT}
+          </div>
+        ) : (
           <TicTacToeField
             values={fieldValues}
             handleCellClick={this.handleCellClick}
@@ -241,13 +350,6 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
                 : s.fieldInactive
             )}
           />
-        ) : (
-          <div
-            role="tic-tac-toe-game-invalid-input-alert"
-            className="alert alert-danger my-5"
-          >
-            {cellSizeError}
-          </div>
         )}
 
         <h4 className="h-4 mt-4">Состояние игры</h4>
@@ -280,21 +382,28 @@ class TicTacToeGame extends Component<TicTacToeGameProps, TicTacToeGameState> {
           </tbody>
         </table>
 
-        <button
+        <Button
+          role="tic-tac-toe-game-start-stop-button"
+          color={
+            status === TicTacToeGameStatuses.Stopped ? 'success' : 'danger'
+          }
+          disabled={randomFillEnabled && !!randomFillValueError}
+          onClick={this.handleStartStopButtonClick}
           className={clsx(
-            'btn d-block w-100',
-            status === TicTacToeGameStatuses.Stopped
-              ? 'btn-outline-success'
-              : 'btn-outline-danger',
+            'd-block w-100',
             css`
               margin-top: 35px;
             `
           )}
-          onClick={this.handleStartStopButtonClick}
-          role="tic-tac-toe-game-start-stop-button"
-        >{`${
-          status === TicTacToeGameStatuses.Stopped ? 'Начать' : 'Завершить'
-        } игру`}</button>
+        >
+          {(function () {
+            if (status === TicTacToeGameStatuses.Started)
+              return 'Завершить игру';
+            return randomFillEnabled
+              ? `Начать игру (случайное заполнение)`
+              : 'Начать игру';
+          })()}
+        </Button>
       </div>
     );
   }
