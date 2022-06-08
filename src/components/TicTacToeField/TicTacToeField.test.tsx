@@ -20,7 +20,7 @@ describe('TicTacToeField', () => {
     TicTacToeCellValues.Cross,
   ];
 
-  const handleCellClick = () => undefined;
+  const handleCellClick = () => {};
 
   it('renders correct number of cells', () => {
     render(

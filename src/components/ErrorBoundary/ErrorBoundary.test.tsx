@@ -18,6 +18,9 @@ describe('ErrorBoundary', () => {
   });
 
   it('renders error message if there are errors in children', () => {
+    const spy = jest.spyOn(console, 'error');
+    spy.mockImplementation(() => {});
+
     const BuggyChild = () => {
       useEffect(() => {
         throw new Error('Buggy component error');
@@ -35,5 +38,7 @@ describe('ErrorBoundary', () => {
     const errorBoundary = screen.getByRole('error-boundary');
     expect(errorBoundary).toBeInTheDocument();
     expect(errorBoundary).toHaveTextContent('Произошла ошибка');
+
+    spy.mockRestore();
   });
 });

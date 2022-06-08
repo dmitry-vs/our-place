@@ -7,15 +7,15 @@ import { APP_NAME } from '../../helpers/consts';
 describe('LoginPage', () => {
   const user = userEvent.setup();
   const testUserName = 'TestUserName';
-  let handleSubmitMock: jest.Mock;
+  let handleLoginMock: jest.Mock;
   let page: HTMLElement,
     heading: HTMLElement,
     userNameInput: HTMLElement,
     loginButton: HTMLElement;
 
   beforeEach(() => {
-    handleSubmitMock = jest.fn();
-    render(<LoginPage handleSubmit={handleSubmitMock} />);
+    handleLoginMock = jest.fn();
+    render(<LoginPage handleLogin={handleLoginMock} />);
     page = screen.getByRole('login-page');
     heading = screen.getByRole('login-page-heading');
     userNameInput = screen.getByRole('login-page-user-name-input');
@@ -42,12 +42,12 @@ describe('LoginPage', () => {
   test('input whitespace and click button then callback not called', async () => {
     await user.type(userNameInput, ' ');
     await user.click(loginButton);
-    expect(handleSubmitMock).not.toBeCalled();
+    expect(handleLoginMock).not.toBeCalled();
   });
 
   test('input whitespace and press enter then callback not called', async () => {
     await user.type(userNameInput, ' {enter}');
-    expect(handleSubmitMock).not.toBeCalled();
+    expect(handleLoginMock).not.toBeCalled();
   });
 
   test('input non-whitespace then button gets enabled', async () => {
@@ -58,11 +58,11 @@ describe('LoginPage', () => {
   test('input non-whitespace and click button then callback called', async () => {
     await user.type(userNameInput, testUserName);
     await user.click(loginButton);
-    expect(handleSubmitMock).toBeCalledTimes(1);
+    expect(handleLoginMock).toBeCalledTimes(1);
   });
 
   test('input non-whitespace and press enter then callback called', async () => {
     await user.type(userNameInput, `${testUserName}{enter}`);
-    expect(handleSubmitMock).toBeCalledTimes(1);
+    expect(handleLoginMock).toBeCalledTimes(1);
   });
 });

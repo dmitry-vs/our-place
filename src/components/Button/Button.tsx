@@ -5,7 +5,6 @@ type ButtonProps = ComponentProps<'button'> & {
   color?: 'primary' | 'info' | 'success' | 'danger' | 'warning';
 };
 
-// TODO pattern (Proxy Component)
 const Button: FC<ButtonProps> = ({
   color = 'primary',
   className,
