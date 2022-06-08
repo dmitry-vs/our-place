@@ -23,7 +23,7 @@ const AuthContext = createContext<AuthContextType>({
 export const useAuthContext = (): AuthContextType => useContext(AuthContext);
 
 export const AuthProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
-  const [userName, setUserName] = useState<string | null>(
+  const [userName, setUserName] = useState<string | null>(() =>
     localStorage.getItem(LocalStorageKeys.UserName)
   );
 
