@@ -39,7 +39,7 @@ describe('AuthProvider', () => {
 
   test('initial render and no userName in local storage, then userName is null', () => {
     customRender();
-    expect(screen.getByRole(userNameRole)).toBeEmpty();
+    expect(screen.getByRole(userNameRole)).toBeEmptyDOMElement();
   });
 
   test('userName correctly loads from local storage', () => {
@@ -59,7 +59,7 @@ describe('AuthProvider', () => {
     customRender();
     await user.click(screen.getByRole(loginButtonRole));
     await user.click(screen.getByRole(logoutButtonRole));
-    expect(screen.getByRole(userNameRole)).toBeEmpty();
+    expect(screen.getByRole(userNameRole)).toBeEmptyDOMElement();
     expect(localStorage.getItem(LocalStorageKeys.UserName)).toBeNull();
   });
 });

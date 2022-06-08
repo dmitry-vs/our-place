@@ -16,8 +16,8 @@ export type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType>({
   userName: null,
-  login: () => undefined,
-  logout: () => undefined,
+  login: () => {},
+  logout: () => {},
 });
 
 export const useAuthContext = (): AuthContextType => useContext(AuthContext);
