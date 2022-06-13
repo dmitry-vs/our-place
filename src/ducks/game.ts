@@ -25,7 +25,7 @@ type RandomFill = {
   value: string;
 };
 
-export const gameInitialState: GameState = {
+export const gameInitialState = {
   status: TicTacToeGameStatuses.Stopped,
   fieldValues: TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   playerSymbol: TicTacToeGameSymbols.Cross,
@@ -38,7 +38,10 @@ export const gameInitialState: GameState = {
 };
 
 // reducer
-export default function gameReducer(state: GameState, action: GameAction) {
+export default function gameReducer(
+  state: GameState = gameInitialState,
+  action: GameAction
+): GameState {
   switch (action.type) {
     case RESET: {
       return isEqual(state, gameInitialState)

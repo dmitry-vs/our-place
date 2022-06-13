@@ -1,9 +1,17 @@
+import { ThunkAction } from '@reduxjs/toolkit';
+import { RootState } from './store';
+import { LocalStorageKeys } from '../helpers/consts';
+
 export type AuthState = {
   userName: string | null;
 };
 
+const authInitialState = {
+  userName: localStorage.getItem(LocalStorageKeys.UserName),
+};
+
 export default function authReducer(
-  state: AuthState,
+  state: AuthState = authInitialState,
   action: AuthAction
 ): AuthState {
   switch (action.type) {
@@ -22,7 +30,6 @@ export default function authReducer(
 const LOGIN = 'our-place/auth/LOGIN';
 const LOGOUT = 'our-place/auth/LOGOUT';
 
-// action types
 type LoginAction = {
   type: typeof LOGIN;
   payload: string;
@@ -32,14 +39,26 @@ type LogoutAction = {
   type: typeof LOGOUT;
 };
 
-export type AuthAction = LoginAction | LogoutAction;
+type AuthAction = LoginAction | LogoutAction;
 
-// action creators
-export const login = (userName: string): LoginAction => ({
-  type: LOGIN,
-  payload: userName,
-});
+// thunks
+export function login(
+  userName: string
+): ThunkAction<void, RootState, undefined, LoginAction> {
+  return (dispatch) => {
+    localStorage.setItem(LocalStorageKeys.UserName, userName);
+    dispatch({ type: LOGIN, payload: userName });
+  };
+}
 
-export const logout = (): LogoutAction => ({
-  type: LOGOUT,
-});
+export function logout(): ThunkAction<
+  void,
+  RootState,
+  undefined,
+  LogoutAction
+> {
+  return (dispatch) => {
+    localStorage.removeItem(LocalStorageKeys.UserName);
+    dispatch({ type: LOGOUT });
+  };
+}
