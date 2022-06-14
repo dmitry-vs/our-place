@@ -1,5 +1,3 @@
-import { cloneDeep, isEqual } from 'lodash';
-
 import {
   TIC_TAC_TOE_CELL_DEFAULT_SIZE,
   TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
@@ -9,7 +7,10 @@ import {
   TicTacToeGameStatuses,
   TicTacToeGameSymbols,
 } from '../helpers/consts';
-import { getTicTacToeGameResult } from '../helpers/utils';
+import {
+  getStateFromLocalStorage,
+  getTicTacToeGameResult,
+} from '../helpers/utils';
 
 export type GameState = {
   status: TicTacToeGameStatuses;
@@ -25,7 +26,7 @@ type RandomFill = {
   value: string;
 };
 
-export const gameInitialState = {
+export const GAME_INITIAL_STATE: GameState = {
   status: TicTacToeGameStatuses.Stopped,
   fieldValues: TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   playerSymbol: TicTacToeGameSymbols.Cross,
@@ -37,17 +38,15 @@ export const gameInitialState = {
   },
 };
 
+const initialState: GameState =
+  getStateFromLocalStorage()?.game || GAME_INITIAL_STATE;
+
 // reducer
 export default function gameReducer(
-  state: GameState = gameInitialState,
+  state: GameState = initialState,
   action: GameAction
 ): GameState {
   switch (action.type) {
-    case RESET: {
-      return isEqual(state, gameInitialState)
-        ? state
-        : cloneDeep(gameInitialState);
-    }
     case SET_PLAYER_SYMBOL: {
       return {
         ...state,
@@ -96,7 +95,6 @@ export default function gameReducer(
 }
 
 // actions
-const RESET = 'our-place/game/RESET';
 const SET_PLAYER_SYMBOL = 'our-place/game/SET_PLAYER_SYMBOL';
 const SET_CELL_SIZE = 'our-place/game/SET_CELL_SIZE';
 const SET_RANDOM_FILL = 'our-place/game/SET_RANDOM_FILL';
@@ -105,10 +103,6 @@ const START_GAME = 'our-place/game/START_GAME';
 const STOP_GAME = 'our-place/game/STOP_GAME';
 
 // action types
-type ResetAction = {
-  type: typeof RESET;
-};
-
 type SetPlayerSymbolAction = {
   type: typeof SET_PLAYER_SYMBOL;
   payload: TicTacToeGameSymbols;
@@ -138,7 +132,6 @@ type StopGameAction = {
 };
 
 type GameAction =
-  | ResetAction
   | SetPlayerSymbolAction
   | SetCellSizeAction
   | SetRandomFillAction
@@ -147,10 +140,6 @@ type GameAction =
   | StopGameAction;
 
 // action creators
-export const resetGame = (): ResetAction => ({
-  type: RESET,
-});
-
 export const setPlayerSymbol = (
   newSymbol: TicTacToeGameSymbols
 ): SetPlayerSymbolAction => ({

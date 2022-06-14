@@ -1,34 +1,32 @@
-import { login, logout } from './auth';
-import { createStore } from './store';
-import { LocalStorageKeys } from '../helpers/consts';
+import authReducer, {
+  AuthAction,
+  AUTH_INITIAL_STATE,
+  login,
+  logout,
+} from './auth';
 
 describe('authReducer', () => {
   const testUserName = 'Test User';
 
-  describe('LOGIN thunk action', () => {
-    test('set correct user name after user login', () => {
-      const store = createStore();
+  describe('LOGIN action', () => {
+    test('set correct user name', () => {
+      const newState = authReducer(AUTH_INITIAL_STATE, login(testUserName));
 
-      store.dispatch(login(testUserName));
-
-      const newState = store.getState();
-      expect(newState.auth.userName).toBe(testUserName);
-      expect(localStorage.getItem(LocalStorageKeys.UserName)).toBe(
-        testUserName
-      );
+      expect(newState.userName).toBe(testUserName);
     });
   });
 
-  describe('LOGOUT thunk action', () => {
-    test('set user name to null after logout', () => {
-      const store = createStore();
-      store.dispatch(login(testUserName));
+  describe('LOGOUT action', () => {
+    test('set user name to null', () => {
+      const newState = authReducer({ userName: testUserName }, logout());
 
-      store.dispatch(logout());
-
-      const newState = store.getState();
-      expect(newState.auth.userName).toBeNull();
-      expect(localStorage.getItem(LocalStorageKeys.UserName)).toBeNull();
+      expect(newState.userName).toBeNull();
     });
+  });
+
+  test('when action is unknown then state is unchanged', () => {
+    const newState = authReducer(AUTH_INITIAL_STATE, {} as AuthAction);
+
+    expect(newState).toBe(AUTH_INITIAL_STATE);
   });
 });

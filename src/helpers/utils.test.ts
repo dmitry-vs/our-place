@@ -3,6 +3,7 @@ import {
   getFieldRandomCellIndexes,
   getFieldRandomCellsCount,
   getRandomFieldValues,
+  getStateFromLocalStorage,
   getTicTacToeGameResult,
   validateNumericInputValue,
 } from './utils';
@@ -12,6 +13,8 @@ import {
   TicTacToeGameResults,
   ValidationErrors,
 } from './consts';
+import { createStore } from '../ducks/store';
+import { login } from '../ducks/auth';
 
 describe('getTicTacToeGameResult', () => {
   it('should return null for default field', () => {
@@ -458,5 +461,22 @@ describe('getRandomFieldValues', () => {
     expect(
       actual.some((item) => item !== TicTacToeCellValues.Empty)
     ).toBeTruthy();
+  });
+});
+
+describe('getStateFromLocalStorage', () => {
+  test('when state is not stored then return null', () => {
+    expect(getStateFromLocalStorage()).toBeNull();
+  });
+
+  test('when state is stored then return correct object', () => {
+    const testUserName = 'Test User';
+    const store = createStore();
+
+    // в store подключена middleware, сохраняющая состояние в localStorage
+    store.dispatch(login(testUserName));
+
+    const actual = getStateFromLocalStorage();
+    expect(actual?.auth.userName).toBe(testUserName);
   });
 });

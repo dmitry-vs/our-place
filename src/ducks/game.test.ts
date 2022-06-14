@@ -1,6 +1,5 @@
 import gameReducer, {
-  gameInitialState,
-  resetGame,
+  GAME_INITIAL_STATE,
   setCellSize,
   setFieldValues,
   setPlayerSymbol,
@@ -17,30 +16,11 @@ import {
 } from '../helpers/consts';
 
 describe('gameReducer', () => {
-  describe('RESET action', () => {
-    test('if state equals initial then state remains the same', () => {
-      const newState = gameReducer(gameInitialState, resetGame());
-
-      expect(newState).toBe(gameInitialState);
-    });
-
-    test('if state not equals initial then new state equals initial', () => {
-      const state = {
-        ...gameInitialState,
-        playerSymbol: TicTacToeGameSymbols.Circle,
-      };
-
-      const newState = gameReducer(state, resetGame());
-
-      expect(newState).toEqual(gameInitialState);
-    });
-  });
-
   describe('SET_PLAYER_SYMBOL action', () => {
     test('sets correct `playerSymbol` value', () => {
       const newSymbol = TicTacToeGameSymbols.Circle;
       const newState = gameReducer(
-        gameInitialState,
+        GAME_INITIAL_STATE,
         setPlayerSymbol(newSymbol)
       );
 
@@ -51,7 +31,10 @@ describe('gameReducer', () => {
   describe('SET_CELL_SIZE action', () => {
     test('sets correct `cellSize` value', () => {
       const newCellSize = '100';
-      const newState = gameReducer(gameInitialState, setCellSize(newCellSize));
+      const newState = gameReducer(
+        GAME_INITIAL_STATE,
+        setCellSize(newCellSize)
+      );
 
       expect(newState.cellSize).toBe(newCellSize);
     });
@@ -61,7 +44,7 @@ describe('gameReducer', () => {
     test('sets correct `randomFill` params', () => {
       const newRandomFill = { enabled: true, value: '75' };
       const newState = gameReducer(
-        gameInitialState,
+        GAME_INITIAL_STATE,
         setRandomFill(newRandomFill)
       );
 
@@ -82,12 +65,15 @@ describe('gameReducer', () => {
         TicTacToeCellValues.Empty,
         TicTacToeCellValues.Circle,
       ];
-      const newState = gameReducer(gameInitialState, setFieldValues(newValues));
+      const newState = gameReducer(
+        GAME_INITIAL_STATE,
+        setFieldValues(newValues)
+      );
 
       const { fieldValues, status, result } = newState;
       expect(fieldValues).toEqual(newValues);
-      expect(status).toBe(gameInitialState.status);
-      expect(result).toBe(gameInitialState.result);
+      expect(status).toBe(GAME_INITIAL_STATE.status);
+      expect(result).toBe(GAME_INITIAL_STATE.result);
     });
 
     test('end game correctly when cross wins', () => {
@@ -103,7 +89,7 @@ describe('gameReducer', () => {
         TicTacToeCellValues.Empty,
       ];
       const newState = gameReducer(
-        gameInitialState,
+        GAME_INITIAL_STATE,
         setFieldValues(crossWinValues)
       );
 
@@ -126,7 +112,7 @@ describe('gameReducer', () => {
         TicTacToeCellValues.Circle,
       ];
       const newState = gameReducer(
-        gameInitialState,
+        GAME_INITIAL_STATE,
         setFieldValues(circleWinValues)
       );
 
@@ -149,7 +135,7 @@ describe('gameReducer', () => {
         TicTacToeCellValues.Circle,
       ];
       const newState = gameReducer(
-        gameInitialState,
+        GAME_INITIAL_STATE,
         setFieldValues(drawValues)
       );
 
@@ -162,7 +148,7 @@ describe('gameReducer', () => {
 
   describe('START_GAME action', () => {
     test('correct status and result is null', () => {
-      const newState = gameReducer(gameInitialState, startGame());
+      const newState = gameReducer(GAME_INITIAL_STATE, startGame());
 
       const { status, result } = newState;
       expect(status).toBe(TicTacToeGameStatuses.Started);
@@ -173,7 +159,7 @@ describe('gameReducer', () => {
   describe('STOP_GAME action', () => {
     test('correct status', () => {
       const newState = gameReducer(
-        { ...gameInitialState, status: TicTacToeGameStatuses.Started },
+        { ...GAME_INITIAL_STATE, status: TicTacToeGameStatuses.Started },
         stopGame()
       );
 

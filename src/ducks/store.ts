@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './auth';
 import gameReducer from './game';
+import { saveStateToLocalStorage } from './middlewares';
 
 export const createStore = () => {
   return configureStore({
@@ -8,6 +9,8 @@ export const createStore = () => {
       auth: authReducer,
       game: gameReducer,
     },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().prepend(saveStateToLocalStorage),
   });
 };
 
