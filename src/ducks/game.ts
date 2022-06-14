@@ -131,7 +131,7 @@ type StopGameAction = {
   type: typeof STOP_GAME;
 };
 
-type GameAction =
+export type GameAction =
   | SetPlayerSymbolAction
   | SetCellSizeAction
   | SetRandomFillAction

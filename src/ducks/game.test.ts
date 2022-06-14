@@ -1,5 +1,6 @@
 import gameReducer, {
   GAME_INITIAL_STATE,
+  GameAction,
   setCellSize,
   setFieldValues,
   setPlayerSymbol,
@@ -165,5 +166,11 @@ describe('gameReducer', () => {
 
       expect(newState.status).toBe(TicTacToeGameStatuses.Stopped);
     });
+  });
+
+  test('when action is unknown then state is unchanged', () => {
+    const newState = gameReducer(GAME_INITIAL_STATE, {} as GameAction);
+
+    expect(newState).toBe(GAME_INITIAL_STATE);
   });
 });
