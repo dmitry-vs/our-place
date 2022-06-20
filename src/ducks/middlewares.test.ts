@@ -1,6 +1,6 @@
 import { createStore } from './store';
-import { logout } from './auth';
 import { getStateFromLocalStorage } from '../helpers/utils';
+import { logout } from './auth-slice';
 
 describe('saveStateToLocalStorage', () => {
   test('when action is dispatched then new state is saved correctly to localStorage', () => {

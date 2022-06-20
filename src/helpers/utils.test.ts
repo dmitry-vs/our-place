@@ -14,7 +14,7 @@ import {
   ValidationErrors,
 } from './consts';
 import { createStore } from '../ducks/store';
-import { login } from '../ducks/auth';
+import { login } from '../ducks/auth-slice';
 
 describe('getTicTacToeGameResult', () => {
   it('should return null for default field', () => {

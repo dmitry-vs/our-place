@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './auth';
-import gameReducer from './game';
+import { authReducer } from './auth-slice';
 import { saveStateToLocalStorage } from './middlewares';
+import { gameReducer } from './game-slice';
 
 export const createStore = () => {
   return configureStore({
@@ -9,8 +9,9 @@ export const createStore = () => {
       auth: authReducer,
       game: gameReducer,
     },
+    // TODO disable devTools for production if enabled by default
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().prepend(saveStateToLocalStorage),
+      getDefaultMiddleware().concat(saveStateToLocalStorage),
   });
 };
 

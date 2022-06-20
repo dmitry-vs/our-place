@@ -1,22 +1,17 @@
-import authReducer, {
-  AuthAction,
-  AUTH_INITIAL_STATE,
-  login,
-  logout,
-} from './auth';
+import { AUTH_INITIAL_STATE, authReducer, login, logout } from './auth-slice';
 
 describe('authReducer', () => {
   const testUserName = 'Test User';
 
-  describe('LOGIN action', () => {
+  describe('login action', () => {
     test('set correct user name', () => {
-      const newState = authReducer(AUTH_INITIAL_STATE, login(testUserName));
+      const newState = authReducer(undefined, login(testUserName));
 
       expect(newState.userName).toBe(testUserName);
     });
   });
 
-  describe('LOGOUT action', () => {
+  describe('logout action', () => {
     test('set user name to null', () => {
       const newState = authReducer({ userName: testUserName }, logout());
 
@@ -25,7 +20,7 @@ describe('authReducer', () => {
   });
 
   test('when action is unknown then state is unchanged', () => {
-    const newState = authReducer(AUTH_INITIAL_STATE, {} as AuthAction);
+    const newState = authReducer(undefined, { type: 'unknown' });
 
     expect(newState).toBe(AUTH_INITIAL_STATE);
   });
