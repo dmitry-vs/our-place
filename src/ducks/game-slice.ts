@@ -8,10 +8,7 @@ import {
   TicTacToeGameStatuses,
   TicTacToeGameSymbols,
 } from '../helpers/consts';
-import {
-  getStateFromLocalStorage,
-  getTicTacToeGameResult,
-} from '../helpers/utils';
+import { getTicTacToeGameResult } from '../helpers/utils';
 
 type GameState = {
   status: TicTacToeGameStatuses;
@@ -39,12 +36,9 @@ export const GAME_INITIAL_STATE: GameState = {
   },
 };
 
-const initialState: GameState =
-  getStateFromLocalStorage()?.game || GAME_INITIAL_STATE;
-
 const gameSlice = createSlice({
   name: 'game',
-  initialState,
+  initialState: GAME_INITIAL_STATE,
   reducers: {
     setPlayerSymbol: (
       state,

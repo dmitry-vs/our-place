@@ -1,10 +1,12 @@
 import { Middleware } from '@reduxjs/toolkit';
 import { LocalStorageKeys } from '../helpers/consts';
+import localforage from 'localforage';
+import { RootState } from './store';
 
 export const saveStateToLocalStorage: Middleware =
   ({ getState }) =>
   (next) =>
-  (action) => {
+  async (action) => {
     next(action);
-    localStorage.setItem(LocalStorageKeys.State, JSON.stringify(getState()));
+    await localforage.setItem<RootState>(LocalStorageKeys.State, getState());
   };

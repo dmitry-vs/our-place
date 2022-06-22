@@ -9,6 +9,7 @@ import {
   ValidationErrors,
 } from './consts';
 import { RootState } from '../ducks/store';
+import localforage from 'localforage';
 
 export const getTicTacToeGameResult = (
   fieldValues: TicTacToeFieldValues
@@ -119,12 +120,5 @@ export const getFieldRandomCellIndexes = (cellCount: number) => {
   return result;
 };
 
-export const getStateFromLocalStorage = () => {
-  const stateEntry = localStorage.getItem(LocalStorageKeys.State);
-  if (!stateEntry) return null;
-  try {
-    return JSON.parse(stateEntry) as RootState;
-  } catch {
-    return null;
-  }
-};
+export const getStateFromLocalStorage = () =>
+  localforage.getItem<RootState>(LocalStorageKeys.State);
