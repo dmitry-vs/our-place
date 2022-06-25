@@ -3,15 +3,20 @@ import {
   getFieldRandomCellIndexes,
   getFieldRandomCellsCount,
   getRandomFieldValues,
+  getStateFromLocalStorage,
   getTicTacToeGameResult,
   validateNumericInputValue,
 } from './utils';
 import {
+  LocalStorageKeys,
   TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   TicTacToeCellValues,
   TicTacToeGameResults,
   ValidationErrors,
 } from './consts';
+import { RootState } from '../ducks/store';
+import { GAME_INITIAL_STATE } from '../ducks/game-slice';
+import localforage from 'localforage';
 
 describe('getTicTacToeGameResult', () => {
   it('should return null for default field', () => {
@@ -458,5 +463,24 @@ describe('getRandomFieldValues', () => {
     expect(
       actual.some((item) => item !== TicTacToeCellValues.Empty)
     ).toBeTruthy();
+  });
+});
+
+describe('getStateFromLocalStorage', () => {
+  test('when state is not stored then return null', async () => {
+    expect(await getStateFromLocalStorage()).toBeNull();
+  });
+
+  test('when state is stored then return correct object', async () => {
+    const testUserName = 'Test User';
+    const testState: RootState = {
+      auth: { userName: testUserName },
+      game: GAME_INITIAL_STATE,
+    };
+
+    await localforage.setItem(LocalStorageKeys.State, testState);
+
+    const actual = await getStateFromLocalStorage();
+    expect(actual?.auth.userName).toBe(testUserName);
   });
 });

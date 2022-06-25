@@ -1,5 +1,6 @@
 import { sample } from 'lodash';
 import {
+  LocalStorageKeys,
   TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   TIC_TAC_TOE_FIELD_SIZE,
   TicTacToeCellValues,
@@ -7,6 +8,8 @@ import {
   TicTacToeGameResults,
   ValidationErrors,
 } from './consts';
+import { RootState } from '../ducks/store';
+import localforage from 'localforage';
 
 export const getTicTacToeGameResult = (
   fieldValues: TicTacToeFieldValues
@@ -116,3 +119,6 @@ export const getFieldRandomCellIndexes = (cellCount: number) => {
 
   return result;
 };
+
+export const getStateFromLocalStorage = () =>
+  localforage.getItem<RootState>(LocalStorageKeys.State);
