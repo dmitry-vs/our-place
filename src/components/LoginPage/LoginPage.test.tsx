@@ -1,21 +1,29 @@
 import React from 'react';
-import { cleanup, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LoginPage from './LoginPage';
 import { APP_NAME } from '../../helpers/consts';
+import { createAppStore } from '../../ducks/store';
+import { Provider } from 'react-redux';
 
 describe('LoginPage', () => {
   const user = userEvent.setup();
   const testUserName = 'TestUserName';
-  let handleLoginMock: jest.Mock;
+  let dispatchMock: jest.Mock;
   let page: HTMLElement,
     heading: HTMLElement,
     userNameInput: HTMLElement,
     loginButton: HTMLElement;
 
   beforeEach(() => {
-    handleLoginMock = jest.fn();
-    render(<LoginPage handleLogin={handleLoginMock} />);
+    dispatchMock = jest.fn();
+    const store = createAppStore();
+    store.dispatch = dispatchMock;
+    render(
+      <Provider store={store}>
+        <LoginPage />
+      </Provider>
+    );
     page = screen.getByRole('login-page');
     heading = screen.getByRole('login-page-heading');
     userNameInput = screen.getByRole('login-page-user-name-input');
@@ -23,7 +31,6 @@ describe('LoginPage', () => {
   });
 
   afterEach(() => {
-    cleanup();
     jest.resetAllMocks();
   });
 
@@ -42,12 +49,12 @@ describe('LoginPage', () => {
   test('input whitespace and click button then callback not called', async () => {
     await user.type(userNameInput, ' ');
     await user.click(loginButton);
-    expect(handleLoginMock).not.toBeCalled();
+    expect(dispatchMock).not.toBeCalled();
   });
 
   test('input whitespace and press enter then callback not called', async () => {
     await user.type(userNameInput, ' {enter}');
-    expect(handleLoginMock).not.toBeCalled();
+    expect(dispatchMock).not.toBeCalled();
   });
 
   test('input non-whitespace then button gets enabled', async () => {
@@ -58,11 +65,11 @@ describe('LoginPage', () => {
   test('input non-whitespace and click button then callback called', async () => {
     await user.type(userNameInput, testUserName);
     await user.click(loginButton);
-    expect(handleLoginMock).toBeCalledTimes(1);
+    expect(dispatchMock).toBeCalledTimes(1);
   });
 
   test('input non-whitespace and press enter then callback called', async () => {
     await user.type(userNameInput, `${testUserName}{enter}`);
-    expect(handleLoginMock).toBeCalledTimes(1);
+    expect(dispatchMock).toBeCalledTimes(1);
   });
 });

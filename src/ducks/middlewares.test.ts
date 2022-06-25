@@ -1,10 +1,10 @@
-import { createStore } from './store';
+import { createAppStore } from './store';
 import { getStateFromLocalStorage } from '../helpers/utils';
 import { logout } from './auth-slice';
 
 describe('saveStateToLocalStorage', () => {
   test('when action is dispatched then new state is saved correctly to localStorage', async () => {
-    const store = await createStore();
+    const store = createAppStore();
 
     store.dispatch(logout()); // action должен быть обработан middleware: saveStateToLocalStorage
 

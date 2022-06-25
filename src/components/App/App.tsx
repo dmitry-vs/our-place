@@ -1,31 +1,47 @@
-import React, { Component } from 'react';
-import { AuthProvider } from '../AuthProvider';
-import Navigation from '../Navigation';
+import React, { FC, useEffect } from 'react';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Pages } from '../../helpers/routes';
+import LoginPage from '../LoginPage';
+import { selectUserName } from '../../ducks/auth-slice';
+import MainPage from '../MainPage';
+import { useAppSelector } from '../../ducks/store';
 
-class App extends Component<{}> {
-  componentDidMount() {
-    window.addEventListener('unhandledrejection', this.handlePromiseRejection);
-  }
+const App: FC = () => {
+  const userName = useAppSelector(selectUserName);
+  const location = useLocation();
+  const routingState = location.state as { from?: Location };
 
-  componentWillUnmount() {
-    window.removeEventListener(
-      'unhandledrejection',
-      this.handlePromiseRejection
-    );
-  }
+  useEffect(() => {
+    window.addEventListener('unhandledrejection', handlePromiseRejection);
 
-  handlePromiseRejection = (e: PromiseRejectionEvent) => {
+    return () => {
+      window.removeEventListener('unhandledrejection', handlePromiseRejection);
+    };
+  }, []);
+
+  const handlePromiseRejection = (e: PromiseRejectionEvent) => {
     // eslint-disable-next-line no-console
     console.log('Promise rejection error:', e);
   };
 
-  render() {
-    return (
-      <AuthProvider>
-        <Navigation />
-      </AuthProvider>
-    );
-  }
-}
+  const loginElement = userName ? (
+    <Navigate to={routingState?.from || Pages.Main} replace />
+  ) : (
+    <LoginPage />
+  );
+
+  const mainElement = userName ? (
+    <MainPage />
+  ) : (
+    <Navigate to={Pages.Auth} state={{ from: location }} replace />
+  );
+
+  return (
+    <Routes>
+      <Route path={Pages.Auth} element={loginElement} />
+      <Route path="*" element={mainElement} />
+    </Routes>
+  );
+};
 
 export default App;

@@ -3,7 +3,7 @@ import { LocalStorageKeys } from '../helpers/consts';
 import localforage from 'localforage';
 import { RootState } from './store';
 
-export const saveStateToLocalStorage: Middleware =
+export const saveStateToLocalStorage: Middleware<{}, RootState> =
   ({ getState }) =>
   (next) =>
   async (action) => {

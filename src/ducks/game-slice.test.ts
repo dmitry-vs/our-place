@@ -1,4 +1,5 @@
 import {
+  TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
   TicTacToeCellValues,
   TicTacToeFieldValues,
   TicTacToeGameResults,
@@ -6,6 +7,7 @@ import {
   TicTacToeGameSymbols,
 } from '../helpers/consts';
 import {
+  clear,
   GAME_INITIAL_STATE,
   gameReducer,
   setCellSize,
@@ -127,12 +129,13 @@ describe('gameReducer', () => {
   });
 
   describe('start action', () => {
-    test('correct status and result is null', () => {
+    test('correct `status`, `result` and `fieldValues`', () => {
       const newState = gameReducer(undefined, start());
 
-      const { status, result } = newState;
+      const { status, result, fieldValues } = newState;
       expect(status).toBe(TicTacToeGameStatuses.Started);
       expect(result).toBeNull();
+      expect(fieldValues).toEqual(TIC_TAC_TOE_DEFAULT_FIELD_VALUES);
     });
   });
 
@@ -145,9 +148,19 @@ describe('gameReducer', () => {
 
       expect(newState.status).toBe(TicTacToeGameStatuses.Stopped);
     });
+  });
 
-    test('when action is unknown then state is unchanged', () => {
-      const newState = gameReducer(undefined, { type: 'unknown' });
+  describe('clear action', () => {
+    test('given state is not default, when clear action is passed, then state equals to default state', () => {
+      const newState = gameReducer(
+        {
+          ...GAME_INITIAL_STATE,
+          status: TicTacToeGameStatuses.Started,
+          playerSymbol: TicTacToeGameSymbols.Circle,
+          result: TicTacToeGameResults.Draw,
+        },
+        clear()
+      );
 
       expect(newState).toBe(GAME_INITIAL_STATE);
     });

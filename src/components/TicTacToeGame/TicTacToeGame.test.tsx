@@ -11,6 +11,8 @@ import {
 import TicTacToeGame from './TicTacToeGame';
 import userEvent from '@testing-library/user-event';
 import { findTicTacToeEmptyCellIndex } from '../../helpers/utils';
+import { createAppStore } from '../../ducks/store';
+import { Provider } from 'react-redux';
 
 describe('TicTacToeGame', () => {
   let game: HTMLElement | null,
@@ -35,7 +37,13 @@ describe('TicTacToeGame', () => {
   const testUserName = 'Test User Name';
 
   beforeEach(() => {
-    render(<TicTacToeGame user={testUserName} />);
+    const store = createAppStore({ auth: { userName: testUserName } });
+    render(
+      <Provider store={store}>
+        <TicTacToeGame />
+      </Provider>
+    );
+
     game = screen.queryByRole('tic-tac-toe-game');
     symbolSelect = screen.getByRole('tic-tac-toe-game-symbol-select');
     symbolSelectOptions = screen.queryAllByRole(

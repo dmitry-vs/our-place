@@ -3,13 +3,15 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { APP_NAME } from '../../helpers/consts';
 import { Screens } from '../../helpers/routes';
 import GameScreen from '../GameScreen';
+import { useAppDispatch, useAppSelector } from '../../ducks/store';
+import { logout, selectUserName } from '../../ducks/auth-slice';
 
-type MainPageProps = {
-  userName: string | null;
-  handleLogout: () => void;
-};
+const MainPage: FC = () => {
+  const userName = useAppSelector(selectUserName);
+  const dispatch = useAppDispatch();
 
-const MainPage: FC<MainPageProps> = ({ userName, handleLogout }) => {
+  const handleLogout = () => dispatch(logout());
+
   return (
     <div role="main-page" className="h-100 d-flex flex-column">
       <header className="navbar navbar-dark bg-dark">
@@ -36,10 +38,7 @@ const MainPage: FC<MainPageProps> = ({ userName, handleLogout }) => {
       </header>
       <main role="main-page-content" className="flex-grow-1">
         <Routes>
-          <Route
-            path={Screens.Game}
-            element={<GameScreen userName={userName} />}
-          />
+          <Route path={Screens.Game} element={<GameScreen />} />
           <Route path="*" element={<Navigate to={Screens.Game} replace />} />
         </Routes>
       </main>

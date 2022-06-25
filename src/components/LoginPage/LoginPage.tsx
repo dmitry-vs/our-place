@@ -1,12 +1,11 @@
 import React, { ChangeEventHandler, FC, SyntheticEvent, useState } from 'react';
 import { css } from '@emotion/css';
 import { APP_NAME } from '../../helpers/consts';
+import { login } from '../../ducks/auth-slice';
+import { useAppDispatch } from '../../ducks/store';
 
-type LoginPageProps = {
-  handleLogin: (userName: string) => void;
-};
-
-const LoginPage: FC<LoginPageProps> = ({ handleLogin }) => {
+const LoginPage: FC = () => {
+  const dispatch = useAppDispatch();
   const [name, setName] = useState('');
 
   const handleNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -15,7 +14,7 @@ const LoginPage: FC<LoginPageProps> = ({ handleLogin }) => {
 
   const handleFormSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    handleLogin(name.trim());
+    dispatch(login(name.trim()));
   };
 
   return (

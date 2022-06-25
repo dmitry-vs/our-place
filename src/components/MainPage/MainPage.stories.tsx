@@ -2,19 +2,18 @@ import React from 'react';
 import MainPage from './MainPage';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { createAppStore } from '../../ducks/store';
 
 export default {
   component: MainPage,
   title: 'Pages/MainPage',
-  decorators: [(story) => <BrowserRouter>{story()}</BrowserRouter>],
 } as ComponentMeta<typeof MainPage>;
 
-const Template: ComponentStory<typeof MainPage> = (args) => (
-  <MainPage {...args} />
+export const Example: ComponentStory<typeof MainPage> = (args) => (
+  <BrowserRouter>
+    <Provider store={createAppStore({ auth: { userName: 'Test User' } })}>
+      <MainPage {...args} />
+    </Provider>
+  </BrowserRouter>
 );
-
-export const Default = Template.bind({});
-Default.args = {
-  userName: 'Test User Name',
-  handleLogout: () => alert('Logout'),
-};

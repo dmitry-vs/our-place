@@ -1,14 +1,16 @@
 import React from 'react';
-import { cleanup, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MainPage from './MainPage';
 import { APP_NAME } from '../../helpers/consts';
 import { BrowserRouter } from 'react-router-dom';
+import { createAppStore } from '../../ducks/store';
+import { Provider } from 'react-redux';
 
 describe('MainPage', () => {
   const user = userEvent.setup();
   const testUserName = 'TestUserName';
-  let handleLogoutMock: jest.Mock;
+  let dispatchMock: jest.Mock;
   let page: HTMLElement,
     brand: HTMLElement,
     userName: HTMLElement,
@@ -16,10 +18,15 @@ describe('MainPage', () => {
     content: HTMLElement;
 
   beforeEach(() => {
-    handleLogoutMock = jest.fn();
+    dispatchMock = jest.fn();
+    const store = createAppStore({ auth: { userName: testUserName } });
+    store.dispatch = dispatchMock;
     render(
-      <MainPage userName={testUserName} handleLogout={handleLogoutMock} />,
-      { wrapper: BrowserRouter }
+      <BrowserRouter>
+        <Provider store={store}>
+          <MainPage />
+        </Provider>
+      </BrowserRouter>
     );
     page = screen.getByRole('main-page');
     brand = screen.getByRole('main-page-brand');
@@ -29,7 +36,6 @@ describe('MainPage', () => {
   });
 
   afterEach(() => {
-    cleanup();
     jest.resetAllMocks();
   });
 
@@ -43,6 +49,6 @@ describe('MainPage', () => {
 
   test('logout callback called after click on logout button', async () => {
     await user.click(logoutButton);
-    expect(handleLogoutMock).toBeCalledTimes(1);
+    expect(dispatchMock).toBeCalledTimes(1);
   });
 });

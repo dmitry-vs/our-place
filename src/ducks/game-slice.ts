@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   TIC_TAC_TOE_CELL_DEFAULT_SIZE,
   TIC_TAC_TOE_DEFAULT_FIELD_VALUES,
@@ -9,6 +9,7 @@ import {
   TicTacToeGameSymbols,
 } from '../helpers/consts';
 import { getTicTacToeGameResult } from '../helpers/utils';
+import { RootState } from './store';
 
 type GameState = {
   status: TicTacToeGameStatuses;
@@ -63,10 +64,14 @@ const gameSlice = createSlice({
     },
     start: (state) => {
       state.status = TicTacToeGameStatuses.Started;
+      state.fieldValues = TIC_TAC_TOE_DEFAULT_FIELD_VALUES;
       state.result = null;
     },
     stop: (state) => {
       state.status = TicTacToeGameStatuses.Stopped;
+    },
+    clear: () => {
+      return GAME_INITIAL_STATE;
     },
   },
 });
@@ -76,8 +81,46 @@ export const {
   setCellSize,
   setRandomFill,
   setFieldValues,
+  clear,
   start,
   stop,
 } = gameSlice.actions;
 
 export const gameReducer = gameSlice.reducer;
+
+const selectGameState = (state: RootState) => state.game;
+
+export const selectGameStatus = createSelector(
+  [selectGameState],
+  (gameState) => gameState.status
+);
+
+export const selectGameFieldValues = createSelector(
+  [selectGameState],
+  (gameState) => gameState.fieldValues
+);
+
+export const selectGamePlayerSymbol = createSelector(
+  [selectGameState],
+  (gameState) => gameState.playerSymbol
+);
+
+export const selectGameResult = createSelector(
+  [selectGameState],
+  (gameState) => gameState.result
+);
+
+export const selectGameCellSize = createSelector(
+  [selectGameState],
+  (gameState) => gameState.cellSize
+);
+
+export const selectGameRandomFillEnabled = createSelector(
+  [selectGameState],
+  (gameState) => gameState.randomFill.enabled
+);
+
+export const selectGameRandomFillValue = createSelector(
+  [selectGameState],
+  (gameState) => gameState.randomFill.value
+);

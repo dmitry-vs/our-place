@@ -1,8 +1,11 @@
 import React from 'react';
-import { cleanup, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import App from './App';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
+import { createAppStore } from '../../ducks/store';
+import { Provider } from 'react-redux';
+import localforage from 'localforage';
 
 describe('App', () => {
   const loginPageRole = 'login-page';
@@ -14,13 +17,23 @@ describe('App', () => {
   const user = userEvent.setup();
   const testUserName = 'Test User';
 
+  const customRender = () => {
+    const store = createAppStore();
+    return render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </BrowserRouter>
+    );
+  };
+
   beforeEach(() => {
-    render(<App />, { wrapper: BrowserRouter });
+    customRender();
   });
 
-  afterEach(() => {
-    cleanup();
-    localStorage.clear();
+  afterEach(async () => {
+    await localforage.clear();
   });
 
   test('show login page on initial render', () => {
@@ -30,7 +43,7 @@ describe('App', () => {
     expect(screen.queryByRole(mainPageRole)).toBeNull();
   });
 
-  test('show main page after login', async () => {
+  test('login, then show main page', async () => {
     const input = screen.getByRole(userNameInputRole);
     await user.type(input, testUserName);
     await user.click(screen.getByRole(loginButtonRole));
@@ -39,7 +52,7 @@ describe('App', () => {
     expect(screen.getByRole(userNameRole)).toHaveTextContent(testUserName);
   });
 
-  test('show login page after logout', async () => {
+  test('login, logout, then show main page', async () => {
     // login
     const input = screen.getByRole(userNameInputRole);
     await user.type(input, testUserName);
@@ -49,21 +62,5 @@ describe('App', () => {
 
     expect(screen.queryByRole(mainPageRole)).toBeNull();
     expect(screen.getByRole(loginPageRole)).toBeInTheDocument();
-  });
-
-  test('cannot login with empty or whitespace user name', async () => {
-    const input = screen.getByRole(userNameInputRole);
-    const loginButton = screen.getByRole(loginButtonRole);
-
-    // try empty name
-    expect(loginButton).toBeDisabled();
-    await user.click(loginButton);
-    expect(screen.queryByRole(mainPageRole)).toBeNull();
-
-    // try whitespace name
-    await user.type(input, ' ');
-    expect(loginButton).toBeDisabled();
-    await user.click(loginButton);
-    expect(screen.queryByRole(mainPageRole)).toBeNull();
   });
 });

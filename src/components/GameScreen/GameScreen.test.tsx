@@ -1,6 +1,8 @@
 import React from 'react';
 import GameScreen from './GameScreen';
 import { cleanup, render, screen } from '@testing-library/react';
+import { createAppStore } from '../../ducks/store';
+import { Provider } from 'react-redux';
 
 describe('GameScreen', () => {
   const gameScreeRole = 'game-screen';
@@ -11,14 +13,26 @@ describe('GameScreen', () => {
     cleanup();
   });
 
-  test('no userName, then renders empty element', () => {
-    render(<GameScreen userName={null} />);
+  test('userName is null, then renders empty element', () => {
+    const store = createAppStore({ auth: { userName: null } });
+    render(
+      <Provider store={store}>
+        <GameScreen />
+      </Provider>
+    );
+
     expect(screen.getByRole(gameScreeRole)).toBeEmptyDOMElement();
     expect(screen.queryByRole(ticTacToeGameRole)).toBeNull();
   });
 
-  test('userName from local storage, then renders game', () => {
-    render(<GameScreen userName={testUserName} />);
+  test('userName is not null, then renders game', () => {
+    const store = createAppStore({ auth: { userName: testUserName } });
+    render(
+      <Provider store={store}>
+        <GameScreen />
+      </Provider>
+    );
+
     expect(screen.getByRole(gameScreeRole)).not.toBeEmptyDOMElement();
     expect(screen.getByRole(ticTacToeGameRole)).toBeInTheDocument();
   });

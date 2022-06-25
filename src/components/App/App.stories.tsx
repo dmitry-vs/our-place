@@ -2,13 +2,18 @@ import React from 'react';
 import App from './App';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { createAppStore } from '../../ducks/store';
 
 export default {
-  component: App,
   title: 'General/App',
-  decorators: [(story) => <BrowserRouter>{story()}</BrowserRouter>],
+  component: App,
 } as ComponentMeta<typeof App>;
 
-const Template: ComponentStory<typeof App> = () => <App />;
-
-export const Example = Template.bind({});
+export const Example: ComponentStory<typeof App> = (args) => (
+  <BrowserRouter>
+    <Provider store={createAppStore()}>
+      <App {...args} />
+    </Provider>
+  </BrowserRouter>
+);

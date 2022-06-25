@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 import TicTacToeGame from '../TicTacToeGame';
+import { useAppSelector } from '../../ducks/store';
+import { selectUserName } from '../../ducks/auth-slice';
 
-type GameScreenProps = {
-  userName: string | null;
-};
+const GameScreen: FC = () => {
+  const userName = useAppSelector(selectUserName);
 
-const GameScreen: FC<GameScreenProps> = ({ userName }) => {
   return (
     <div
       role="game-screen"
       className="container d-flex justify-content-center py-4"
     >
-      {userName && <TicTacToeGame user={userName} />}
+      {userName && <TicTacToeGame />}
     </div>
   );
 };
