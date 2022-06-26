@@ -59,5 +59,4 @@ export const APP_NAME = 'Our Place';
 
 export const enum LocalStorageKeys {
   State = 'state',
-  UserName = 'userName',
 }

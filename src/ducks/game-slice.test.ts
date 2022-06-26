@@ -17,6 +17,7 @@ import {
   start,
   stop,
 } from './game-slice';
+import { logout } from './auth-slice';
 
 describe('gameReducer', () => {
   describe('setPlayerSymbol action', () => {
@@ -151,7 +152,7 @@ describe('gameReducer', () => {
   });
 
   describe('clear action', () => {
-    test('given state is not default, when clear action is passed, then state equals to default state', () => {
+    test('given state is not default, when `clear` action is passed, then state equals to default state', () => {
       const newState = gameReducer(
         {
           ...GAME_INITIAL_STATE,
@@ -160,6 +161,22 @@ describe('gameReducer', () => {
           result: TicTacToeGameResults.Draw,
         },
         clear()
+      );
+
+      expect(newState).toBe(GAME_INITIAL_STATE);
+    });
+  });
+
+  describe('logout action (extra)', () => {
+    test('given state is not default, when `logout` action (extra) is passed, then state equals to default', () => {
+      const newState = gameReducer(
+        {
+          ...GAME_INITIAL_STATE,
+          status: TicTacToeGameStatuses.Started,
+          playerSymbol: TicTacToeGameSymbols.Circle,
+          result: TicTacToeGameResults.Draw,
+        },
+        logout()
       );
 
       expect(newState).toBe(GAME_INITIAL_STATE);

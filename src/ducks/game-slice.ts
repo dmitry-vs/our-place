@@ -10,6 +10,7 @@ import {
 } from '../helpers/consts';
 import { getTicTacToeGameResult } from '../helpers/utils';
 import { RootState } from './store';
+import { logout } from './auth-slice';
 
 type GameState = {
   status: TicTacToeGameStatuses;
@@ -73,6 +74,11 @@ const gameSlice = createSlice({
     clear: () => {
       return GAME_INITIAL_STATE;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(logout.type, () => {
+      return GAME_INITIAL_STATE;
+    });
   },
 });
 

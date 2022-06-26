@@ -1,7 +1,6 @@
-import React, { ChangeEventHandler, FC, useEffect } from 'react';
+import React, { ChangeEventHandler, FC } from 'react';
 import { useAppDispatch, useAppSelector } from '../../ducks/store';
 import {
-  clear,
   selectGameCellSize,
   selectGameFieldValues,
   selectGamePlayerSymbol,
@@ -62,12 +61,6 @@ const TicTacToeGame: FC<TicTacToeGameProps> = ({ className }) => {
   const randomFillValue = useAppSelector(selectGameRandomFillValue);
   const result = useAppSelector(selectGameResult);
   const userName = useAppSelector(selectUserName);
-
-  useEffect(() => {
-    return () => {
-      dispatch(clear());
-    };
-  }, [dispatch]);
 
   const handleChange: ChangeEventHandler<
     HTMLInputElement | HTMLSelectElement
