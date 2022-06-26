@@ -5,11 +5,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import { localStorageSaga } from './sagas';
 
-const reducer = combineReducers({
-  auth: authReducer,
-  game: gameReducer,
-});
+export const createAppReducer = () => {
+  return combineReducers({
+    auth: authReducer,
+    game: gameReducer,
+  });
+};
 
+const reducer = createAppReducer();
 export type RootState = ReturnType<typeof reducer>;
 
 export const createAppStore = (initialState?: Partial<RootState>) => {
