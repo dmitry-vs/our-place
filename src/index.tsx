@@ -1,11 +1,11 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './components/App';
-import './styles/index.scss';
+import App from './common/App';
+import './common/styles/index.scss';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { createAppStore } from './ducks/store';
-import { getStateFromLocalStorage } from './helpers/utils';
+import { createAppStore } from './common/store';
+import { getStateFromLocalStorage } from './common/utils';
 
 const renderApp = async () => {
   const state = await getStateFromLocalStorage();
