@@ -1,9 +1,9 @@
 import { expectSaga } from 'redux-saga-test-plan';
-import { createAppReducer } from './store';
-import { login } from '../auth/auth-slice';
+import { createAppReducer } from '../store';
+import { login } from '../../auth/auth-slice';
 import { localStorageSaga } from './sagas';
 import localforage from 'localforage';
-import { getStateFromLocalStorage } from './utils';
+import { getStateFromLocalStorage } from '../utils';
 
 describe('localStorageSaga', () => {
   const reducer = createAppReducer();
@@ -17,14 +17,14 @@ describe('localStorageSaga', () => {
     await expectSaga(localStorageSaga)
       .withReducer(reducer)
       .dispatch(login(testUserName))
-      .run();
+      .silentRun();
 
     const savedState = await getStateFromLocalStorage();
     expect(savedState?.auth.userName).toBe(testUserName);
   });
 
   test('when action is not dispatched, then state is not saved to local storage', async () => {
-    await expectSaga(localStorageSaga).withReducer(reducer).run();
+    await expectSaga(localStorageSaga).withReducer(reducer).silentRun();
 
     const savedState = await getStateFromLocalStorage();
     expect(savedState).toBeNull();

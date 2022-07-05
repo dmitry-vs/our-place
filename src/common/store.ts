@@ -3,7 +3,7 @@ import { authReducer } from '../auth/auth-slice';
 import { gameReducer } from '../game/game-slice';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
-import { localStorageSaga } from './sagas';
+import rootSaga from './sagas/sagas';
 
 export const createAppReducer = () => {
   return combineReducers({
@@ -20,10 +20,11 @@ export const createAppStore = (initialState?: Partial<RootState>) => {
   const store = configureStore({
     reducer,
     preloadedState: initialState,
-    middleware: [sagaMiddleWare],
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({ thunk: false }).concat(sagaMiddleWare),
     devTools: process.env.NODE_ENV !== 'production',
   });
-  sagaMiddleWare.run(localStorageSaga);
+  sagaMiddleWare.run(rootSaga);
   return store;
 };
 
